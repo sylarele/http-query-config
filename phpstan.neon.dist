@@ -1,0 +1,15 @@
+parameters:
+    level: max
+
+    parallel:
+       maximumNumberOfProcesses: 4
+
+    tmpDir: storage/tmp/phpstan
+
+    paths:
+        - src
+        - tests
+
+    ignoreErrors:
+        -
+            identifier: missingType.generics

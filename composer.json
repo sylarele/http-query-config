@@ -1,0 +1,42 @@
+{
+    "name": "sylarele/http-query-config",
+    "description": "Queries are used to simplify the configuration of filters, scopes, relationships, etc., … and to simplify the pagination of results.",
+    "keywords": [
+        "laravel",
+        "http-query"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Sylarele\\HttpQueryConfig\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.3",
+        "illuminate/collections": "^10.0|^11.0",
+        "illuminate/database": "^10.0|^11.0",
+        "illuminate/pagination": "^10.0|^11.0",
+        "illuminate/support": "^10.0|^11.0",
+        "illuminate/validation": "^10.0|^11.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.59",
+        "phpstan/phpstan": "^1.11",
+        "rector/rector": "^1.2",
+        "shipmonk/composer-dependency-analyser": "^1.6"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "replace": {
+        "symfony/polyfill-php80": "*",
+        "symfony/polyfill-php81": "*",
+        "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-intl-grapheme": "*",
+        "symfony/polyfill-intl-normalizer": "*",
+        "symfony/polyfill-mbstring": "*"
+    }
+}
