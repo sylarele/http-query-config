@@ -9,7 +9,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Sylarele\\HttpQueryConfig\\": "src/"
+            "Sylarele\\HttpQueryConfig\\": "src/",
+            "Tests\\Sylarele\\HttpQueryConfig\\": "tests/"
         }
     },
     "require": {
@@ -22,6 +23,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.59",
+        "orchestra/testbench": "^9.2",
         "phpstan/phpstan": "^1.11",
         "rector/rector": "^1.2",
         "shipmonk/composer-dependency-analyser": "^1.6"
@@ -38,5 +40,29 @@
         "symfony/polyfill-intl-grapheme": "*",
         "symfony/polyfill-intl-normalizer": "*",
         "symfony/polyfill-mbstring": "*"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve"
+        ],
+        "lint": [
+            "@php vendor/bin/phpstan analyse"
+        ]
     }
 }

@@ -12,7 +12,8 @@ use Rector\ValueObject\PhpVersion;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([
         __DIR__ . '/src',
-        __DIR__ . '/tests'
+        __DIR__ . '/tests',
+        __DIR__ . '/workbench',
     ]);
 
     $rectorConfig->phpVersion(PhpVersion::PHP_83);
