@@ -75,3 +75,13 @@ dependencies: ## Check if the dependency are compliant
 		--ignore-shadow-deps \
 		--ignore-unused-deps \
 		--ignore-dev-in-prod-deps
+
+.PHONY: migrate-fresh
+migrate-fresh:  ## Lance le formatage du code
+	$(call printSection,Migrate fresh)
+	${BIN_DIR}/testbench migrate:fresh
+
+.PHONY: test
+test:  ## Lance le formatage du code
+	$(call printSection,DUSTER)
+	${BIN_DIR}/phpunit --testsuite=Unit

@@ -23,9 +23,7 @@ class FooQuery extends Query
     #[Override]
     protected function configure(QueryConfig $config): void
     {
-        $config->sorts(
-            'id',
-            'name',
-        );
+        $config->filter('name');
+        $config->sorts('id', 'name');
     }
 }

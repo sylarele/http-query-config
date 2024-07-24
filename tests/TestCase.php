@@ -21,8 +21,10 @@ class TestCase extends \Orchestra\Testbench\TestCase
     #[Override]
     protected function defineEnvironment($app)
     {
+        /** @var Repository $config */
+        $config = $app['config'];
         // Setup default database to use sqlite :memory:
-        tap($app['config'], function (Repository $config): void {
+        tap($config, function (Repository $config): void {
             $config->set('database.default', 'testbench');
             $config->set('database.connections.testbench', [
                 'driver'   => 'sqlite',

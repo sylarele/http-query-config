@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Concerns;
 
 use BackedEnum;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Query\Builder;
 use InvalidArgumentException;
 use Nette\NotImplementedException;
 use Sylarele\HttpQueryConfig\Contracts\QueryResult;
@@ -24,7 +24,7 @@ trait HttpBuilder
     /**
      * Apply the query filters, relationships and sorts.
      */
-    public function configureForQuery(?Query $query): static
+    public function configureForQuery(?Query $query): static|Builder
     {
         if (!$query instanceof Query) {
             return $this;
@@ -70,14 +70,6 @@ trait HttpBuilder
     }
 
     /**
-     * @deprecated use configureForQuery instead
-     */
-    public function forQuery(?Query $query): static
-    {
-        return $this->configureForQuery($query);
-    }
-
-    /**
      * Returns the paginated results, depending on the query pagination.
      */
     public function paginateForQuery(Query $query): QueryResult
@@ -111,19 +103,26 @@ trait HttpBuilder
 
                 foreach ($relation->getScopes() as $scope) {
                     if (!$builder instanceof MorphTo) {
-                        app()->call([$builder->getQuery(), $scope]);
+                        /** @var callable $callableQuery */
+                        $callableQuery = [$builder->getQuery(), $scope];
+                        app()->call($callableQuery);
 
                         continue;
                     }
 
-                    $types = $builder->getQuery()->getModel()->getCasts()[$builder->getMorphType()] ?? null;
+                    $types = $builder
+                        ->getQuery()
+                        ->getModel()
+                        ->getCasts()[$builder->getMorphType()] ?? null;
 
                     if (!is_subclass_of($types, BackedEnum::class)) {
-                        throw new InvalidArgumentException(sprintf(
-                            'The model %s does not have an enum cast for the morph type %s',
-                            class_basename($builder->getQuery()->getModel()),
-                            $builder->getMorphType(),
-                        ));
+                        throw new InvalidArgumentException(
+                            sprintf(
+                                'The model %s does not have an enum cast for the morph type %s',
+                                class_basename($builder->getQuery()->getModel()),
+                                $builder->getMorphType(),
+                            )
+                        );
                     }
                 }
 
@@ -134,14 +133,17 @@ trait HttpBuilder
         $dotPosition = strrpos($relation->getName(), '.');
 
         if ($dotPosition !== false) {
-            $subrelation = $query->getConfig()->getRelationship(
-                relationship: substr($relation->getName(), 0, $dotPosition),
-            );
+            $subRelation = $query
+                ->getConfig()
+                ->getRelationship(
+                    relationship: substr($relation->getName(), 0, $dotPosition),
+                );
 
-            if ($subrelation instanceof Relationship) {
-                $builder = $this->applyRelationship($query, new RelationshipValue(
-                    relationship: $subrelation,
-                ));
+            if ($subRelation instanceof Relationship) {
+                $builder = $this->applyRelationship(
+                    $query,
+                    new RelationshipValue(relationship: $subRelation)
+                );
             }
         }
 
@@ -161,7 +163,7 @@ trait HttpBuilder
             FilterMode::Contains => $this->where(
                 column: $filter->getField(),
                 operator: 'like',
-                value: $filter->getValue(),
+                value: '%' . $this->escapeSQLLike($filter->getValue()) . '%',
                 boolean: $filter->getEloquentBoolean(),
             ),
             default => throw new NotImplementedException('Invalid filter mode'),
@@ -263,11 +265,20 @@ trait HttpBuilder
         };
     }
 
-    protected function applyArrayFilter(FilterValue $filter): static
+    protected function applyArrayFilter(FilterValue $filter): static|Builder
     {
         return match ($filter->getMode()) {
             FilterMode::In => $this->whereIn($filter->getField(), $filter->getValue()),
             default => throw new NotImplementedException('Invalid filter mode'),
         };
+    }
+
+    private function escapeSQLLike(mixed $value): string
+    {
+        if (!\is_string($value)) {
+            throw new InvalidArgumentException('value must be a string');
+        }
+
+        return str_replace(['\\', '_', '%'], ['\\\\', '\\_', '\\%'], $value);
     }
 }

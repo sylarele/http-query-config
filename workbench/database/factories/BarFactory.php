@@ -6,24 +6,23 @@ namespace Workbench\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Override;
-use Workbench\App\Models\Foo;
+use Workbench\App\Models\Bar;
 
 /**
- * @template TModelClass of Foo
+ * @template TModelClass of Bar
  *
  * @extends Factory<TModelClass>
  */
-class FooFactory extends Factory
+class BarFactory extends Factory
 {
     /** @var class-string<TModelClass> */
-    protected $model = Foo::class;
+    protected $model = Bar::class;
 
     #[Override]
     public function definition(): array
     {
         return [
             'name' => $this->faker->name(),
-            'size' => random_int(1, 100),
         ];
     }
 }

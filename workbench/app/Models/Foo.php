@@ -8,17 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Override;
 use Workbench\App\Builders\FooBuilder;
-use Workbench\App\Queries\FooQuery;
 
 /**
+ * @property string $name
+ * @property int $size
  * @method static FooBuilder query()
  */
 class Foo extends Model
 {
     /**
-     * Create a new Eloquent query builder for the model.
-     *
-     * @param  QueryBuilder  $query
+     * @param QueryBuilder $query
      */
     #[Override]
     public function newEloquentBuilder($query): FooBuilder
