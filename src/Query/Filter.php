@@ -12,7 +12,6 @@ use Override;
 use Stringable;
 use Sylarele\HttpQueryConfig\Contracts\QueryFilter;
 use Sylarele\HttpQueryConfig\Enums\FilterType;
-use Sylarele\HttpQueryConfig\Rules\In;
 
 /**
  * Configures a simple query filter, for a single field.

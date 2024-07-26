@@ -13,11 +13,11 @@ use Sylarele\HttpQueryConfig\Contracts\QueryResult;
 /**
  * Offset pagination (standard pagination).
  */
-class OffsetPagination implements QueryPagination
+readonly class OffsetPagination implements QueryPagination
 {
     public function __construct(
-        protected readonly int $page,
-        protected readonly int $limit,
+        protected int $page,
+        protected int $limit,
     ) {
     }
 

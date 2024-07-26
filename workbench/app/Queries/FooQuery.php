@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Workbench\App\Queries;
 
+use Illuminate\Validation\Rules\Enum;
 use Override;
+use Sylarele\HttpQueryConfig\Enums\FilterType;
 use Sylarele\HttpQueryConfig\Query\Query;
 use Sylarele\HttpQueryConfig\Query\QueryConfig;
+use Sylarele\HttpQueryConfig\Query\ScopeArgument;
+use Workbench\App\Enums\FooState;
 use Workbench\App\Models\Foo;
 
 class FooQuery extends Query
@@ -23,7 +27,23 @@ class FooQuery extends Query
     #[Override]
     protected function configure(QueryConfig $config): void
     {
-        $config->filter('name');
+        // Filter
+        $config->filter('name')->type(FilterType::String);
+        $config->filter('size')->type(FilterType::Integer);
+
+        // Scopes
+        $config
+            ->filter('whereState')
+            ->scope('whereState')
+            ->arg(
+                'state',
+                fn (ScopeArgument $arg) => $arg->withValidation([
+                    'string',
+                    new Enum(FooState::class),
+                ])
+            );
+
+        // Sorts
         $config->sorts('id', 'name');
     }
 }

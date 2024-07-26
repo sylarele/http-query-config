@@ -41,7 +41,7 @@ enum FilterType
     }
 
     /**
-     * @return array<int,string|BackedEnum>
+     * @return array<int,BackedEnum>
      */
     public function getModes(): array
     {

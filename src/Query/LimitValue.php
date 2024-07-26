@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Sylarele\HttpQueryConfig\Query;
 
-class LimitValue
+readonly class LimitValue
 {
     public function __construct(
-        protected readonly ?int $value,
+        protected ?int $value,
     ) {
     }
 

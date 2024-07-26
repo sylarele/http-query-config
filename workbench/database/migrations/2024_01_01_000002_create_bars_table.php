@@ -13,7 +13,13 @@ return new class () extends Migration {
             $table->increments('id');
             $table->string('name');
             $table->integer('size');
+            $table->unsignedBigInteger('foo_id');
             $table->timestamps();
+
+            $table
+                ->foreign('foo_id')
+                ->references('id')
+                ->on('foos');
         });
     }
 

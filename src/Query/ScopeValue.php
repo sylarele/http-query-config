@@ -10,14 +10,14 @@ use WeakReference;
 /**
  * A scope value on a query.
  */
-class ScopeValue
+readonly class ScopeValue
 {
     /** @var array<int,ScopeArgumentValue> */
-    protected readonly array $arguments;
+    protected array $arguments;
 
     public function __construct(
-        protected readonly WeakReference $query,
-        protected readonly Scope $scope,
+        protected WeakReference $query,
+        protected Scope $scope,
     ) {
         $this->arguments = array_map(
             callback: static fn (ScopeArgument $argument): ScopeArgumentValue => new ScopeArgumentValue(

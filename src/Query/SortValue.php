@@ -9,11 +9,11 @@ use Sylarele\HttpQueryConfig\Enums\SortOrder;
 /**
  * A sorting value on a query.
  */
-class SortValue
+readonly class SortValue
 {
     public function __construct(
-        protected readonly Sort $sort,
-        protected readonly SortOrder $order,
+        protected Sort $sort,
+        protected SortOrder $order,
     ) {
     }
 

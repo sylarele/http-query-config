@@ -47,7 +47,7 @@ trait HttpBuilder
         }
 
         foreach ($query->getScopes() as $scope) {
-            $this->applyScope($query, $scope);
+            $this->applyScope($scope);
         }
 
         foreach ($query->getRelationships() as $relation) {
@@ -81,11 +81,9 @@ trait HttpBuilder
     /**
      * Applies a scope filter to the query, injecting its dependencies.
      */
-    protected function applyScope(Query $query, ScopeValue $scope): static
+    protected function applyScope(ScopeValue $scope): static
     {
-        $scope->getScopeName();
-
-        return $this;
+        return app()->call([$this, $scope->getScopeName()], $scope->getArgumentsMap());
     }
 
     /**

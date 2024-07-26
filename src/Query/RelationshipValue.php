@@ -7,10 +7,10 @@ namespace Sylarele\HttpQueryConfig\Query;
 /**
  * A relationship to apply to a query.
  */
-class RelationshipValue
+readonly class RelationshipValue
 {
     public function __construct(
-        protected readonly Relationship $relationship,
+        protected Relationship $relationship,
     ) {
     }
 

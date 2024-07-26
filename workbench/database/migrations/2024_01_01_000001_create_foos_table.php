@@ -13,6 +13,7 @@ return new class () extends Migration {
             $table->increments('id');
             $table->string('name');
             $table->integer('size');
+            $table->enum('state', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });
     }
