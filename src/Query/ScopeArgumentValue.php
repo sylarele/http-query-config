@@ -24,7 +24,7 @@ class ScopeArgumentValue
         protected readonly ScopeArgument $argument,
     ) {
         if ($argument->getResolver() instanceof Closure) {
-            $this->value = ($argument->getResolver())($query->get());
+            $this->value = \call_user_func($argument->getResolver(), $query->get());
         }
     }
 
@@ -34,10 +34,12 @@ class ScopeArgumentValue
     public function set(mixed $value): static
     {
         if ($value !== null && $this->argument->getTransformer() instanceof Closure) {
-            $value = ($this->argument->getTransformer())($value, $this->query->get());
+            $this->value = \call_user_func(
+                $this->argument->getTransformer(),
+                $value,
+                $this->query->get()
+            );
         }
-
-        $this->value = $value;
 
         return $this;
     }

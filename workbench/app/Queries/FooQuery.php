@@ -37,9 +37,11 @@ class FooQuery extends Query
             ->scope('whereState')
             ->arg(
                 'state',
-                static fn (ScopeArgument $arg): ScopeArgument => $arg->withValidation([
-                    '' => ['string', new Enum(FooState::class)]
-                ])
+                static fn (ScopeArgument $arg): ScopeArgument => $arg
+                    ->withValidation(['string', new Enum(FooState::class)])
+                    ->transform(
+                        static fn (string $value): FooState => FooState::from($value)
+                    )
             );
 
         // Sorts

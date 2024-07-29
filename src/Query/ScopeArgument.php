@@ -10,9 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 use ReflectionNamedType;
 use ReflectionParameter;
 use Stringable;
+use Sylarele\HttpQueryConfig\Contracts\QueryFilter;
 
 /**
  * A query scope argument config.
+ *
+ * @phpstan-import-type ValidationRules from QueryFilter
  */
 class ScopeArgument
 {
@@ -25,7 +28,7 @@ class ScopeArgument
     /** @var Closure|null transforms the value passed to the query argument into the value passed to the scope parameter */
     protected ?Closure $transformer = null;
 
-    /** @var array<string, array<int, string|Stringable|Rule>>|null the custom validation rules for the query argument */
+    /** @var ValidationRules|null the custom validation rules for the query argument */
     protected ?array $validation = null;
 
     /**
@@ -49,6 +52,8 @@ class ScopeArgument
 
     /**
      * Sets the resolver for the default value of the scope parameter.
+     *
+     * @param Closure(object|null): mixed $resolver
      */
     public function using(Closure $resolver): static
     {
@@ -59,6 +64,8 @@ class ScopeArgument
 
     /**
      * Sets the transformer for this argument.
+     *
+     * @param Closure(string, object|null): mixed $transformer
      */
     public function transform(Closure $transformer): static
     {
@@ -68,13 +75,25 @@ class ScopeArgument
     }
 
     /**
-     * Sets custom validation rules for this argument.
+     * Set custom validation rule for this argument.
      *
-     * @param array<string, array<int, string|Stringable|Rule>> $rules
+     * @param array<int, string|Stringable|Rule> $rules
      */
     public function withValidation(array $rules): static
     {
-        $this->validation = $rules;
+        $this->validation[$this->name] = $rules;
+
+        return $this;
+    }
+
+    /**
+     * Sets custom validation rules for this argument.
+     *
+     * @param array<int, string|Stringable|Rule> $rules
+     */
+    public function addedValidation(string $subKey, array $rules): static
+    {
+        $this->validation[$this->name.'.'.$subKey] = $rules;
 
         return $this;
     }
@@ -112,7 +131,7 @@ class ScopeArgument
     }
 
     /**
-     * @return array<int|string, array<int, string|Stringable|Rule>>|null the custom validation
+     * @return ValidationRules|null the custom validation
      * rules for the query argument
      */
     public function getValidation(): ?array

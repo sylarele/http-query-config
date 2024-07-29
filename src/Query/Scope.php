@@ -13,13 +13,14 @@ use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
-use Stringable;
 use Sylarele\HttpQueryConfig\Contracts\QueryFilter;
 use Sylarele\HttpQueryConfig\Exceptions\InvalidScopeArgumentTypeException;
 use Sylarele\HttpQueryConfig\Exceptions\ScopeParameterNotFoundException;
 
 /**
  * Similar to filters, but use a Builder scope instead of a database field.
+ *
+ * @phpstan-import-type ValidationRules from QueryFilter
  */
 class Scope implements QueryFilter
 {
@@ -27,9 +28,9 @@ class Scope implements QueryFilter
     protected array $arguments = [];
 
     /**
-     * @param  Model  $model     the model linked to the query
-     * @param  string  $name      the name of the filter on the query
-     * @param  string  $scopeName the name of the Builder scope to call
+     * @param Model $model the model linked to the query
+     * @param string $name the name of the filter on the query
+     * @param string $scopeName the name of the Builder scope to call
      */
     public function __construct(
         protected readonly Model $model,
@@ -41,8 +42,9 @@ class Scope implements QueryFilter
     /**
      * Adds a query argument to the scope.
      *
-     * @param  string  $name   The query name of the argument
-     * @param  Closure|null  $config Configures the argument. Accepts a ScopeArgument instance.
+     * @param string $name The query name of the argument
+     * @param Closure(ScopeArgument):ScopeArgument|null $config Configures the argument. Accepts a
+     * ScopeArgument instance.
      */
     public function arg(string $name, ?Closure $config = null): static
     {
@@ -103,16 +105,12 @@ class Scope implements QueryFilter
     }
 
     /**
-     * @return array<string, array<int, string|Stringable|Rule>> the validation rules for the scope
+     * @return ValidationRules the validation rules for the scope
      */
     #[Override]
     public function getValidation(): array
     {
-        $result = [
-            '' => \count($this->arguments)
-                ? ['nullable', 'array']
-                : ['nullable'],
-        ];
+        $result = [];
 
         $reflection = new ReflectionMethod($this->model->newQuery(), $this->scopeName);
 
@@ -124,13 +122,7 @@ class Scope implements QueryFilter
                 );
 
             foreach ($validation as $key => $rules) {
-                if ($key === 0) {
-                    $key = '*';
-                }
-
-                $result[sprintf('%s.%s', $argument->getName(), $key)] = \is_array($rules)
-                    ? $rules
-                    : explode('|', (string) $rules);
+                $result[$key] = $rules;
             }
         }
 
@@ -140,7 +132,7 @@ class Scope implements QueryFilter
     /**
      * Guesses a scope argument validation rules, using the reflection API.
      *
-     * @return array<int,string>
+     * @return ValidationRules
      */
     protected function guessArgumentValidation(
         ReflectionMethod $reflection,
@@ -158,10 +150,12 @@ class Scope implements QueryFilter
         }
 
         return [
-            $parameter->isOptional() || $type->allowsNull()
-                ? 'nullable'
-                : 'required_with:' . $this->getName(),
-            ...$this->builtinTypeToValidation($argument, $type->getName()),
+            $this->getName() => [
+                $parameter->isOptional() || $type->allowsNull()
+                    ? 'nullable'
+                    : 'required',
+                $this->builtinTypeToValidation($argument, $type->getName()),
+            ]
         ];
     }
 
@@ -205,16 +199,13 @@ class Scope implements QueryFilter
         return $result;
     }
 
-    /**
-     * @return array<int,string>
-     */
-    protected function builtinTypeToValidation(ScopeArgument $argument, string $builtin): array
+    protected function builtinTypeToValidation(ScopeArgument $argument, string $builtin): string
     {
         return match ($builtin) {
-            'int' => ['integer'],
-            'float' => ['numeric'],
-            'string' => ['string'],
-            'bool' => ['boolean'],
+            'int' => 'integer',
+            'float' => 'numeric',
+            'string' => 'string',
+            'bool' => 'boolean',
             default => throw new InvalidScopeArgumentTypeException(
                 model: $this->model,
                 scope: $this,

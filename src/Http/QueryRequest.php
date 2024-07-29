@@ -10,6 +10,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\In;
 use RuntimeException;
 use Stringable;
+use Sylarele\HttpQueryConfig\Contracts\QueryFilter;
 use Sylarele\HttpQueryConfig\Enums\FilterMode;
 use Sylarele\HttpQueryConfig\Enums\FilterType;
 use Sylarele\HttpQueryConfig\Enums\PaginationMode;
@@ -28,6 +29,8 @@ use Sylarele\HttpQueryConfig\Query\Sort;
  * Validates a query request.
  *
  * @template TModelClass of Query
+ *
+ * @phpstan-import-type ValidationRules from QueryFilter
  */
 abstract class QueryRequest extends FormRequest
 {
@@ -43,7 +46,7 @@ abstract class QueryRequest extends FormRequest
     /**
      * Returns the list of rules to validate the request.
      *
-     * @return array<string, array<int, string|Stringable|Rule>>
+     * @return ValidationRules
      */
     public function rules(): array
     {
@@ -58,8 +61,7 @@ abstract class QueryRequest extends FormRequest
             $name = $filter->getName();
 
             foreach ($filter->getValidation() as $key => $value) {
-                $key = $key === '' ? $name : sprintf('%s.%s', $name, $key);
-                $rules[$key] = $value;
+                $rules[sprintf('%s.%s', $name, $key)] = $value;
             }
         }
 
@@ -271,9 +273,9 @@ abstract class QueryRequest extends FormRequest
     }
 
     /**
-     * @param array<string, array<int, string|Stringable|Rule>> $rules
+     * @param ValidationRules $rules
      *
-     * @return array<string, array<int, string|Stringable|Rule>>
+     * @return ValidationRules
      */
     protected function addPaginationValidation(array $rules): array
     {

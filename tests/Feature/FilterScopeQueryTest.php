@@ -2,17 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylarele\HttpQueryConfig\Unit;
+namespace Tests\Sylarele\HttpQueryConfig\Feature;
 
-use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Override;
-use PHPUnit\Framework\Attributes\DataProvider;
-use Sylarele\HttpQueryConfig\Enums\FilterMode;
 use Tests\Sylarele\HttpQueryConfig\TestCase;
 use Workbench\App\Enums\FooState;
-use Workbench\App\Models\Foo;
-use Workbench\App\Queries\FooQuery;
 use Workbench\Database\Factories\FooFactory;
 
 class FilterScopeQueryTest extends TestCase
@@ -29,19 +24,32 @@ class FilterScopeQueryTest extends TestCase
 
     public function testShouldFilterWithScope(): void
     {
-        $query = new FooQuery();
-        $query
-            ->scope('whereState')
-            ->setArgument('state', FooState::Inactive->value);
+        $this
+            ->getJson(
+                route(
+                    'foos.index',
+                    ['whereState[state]' => FooState::Inactive->value]
+                )
+            )
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.name', 'Carol');
+    }
 
-        $foos = Foo::query()
-            ->configureForQuery($query)
-            ->get();
-
-        self::assertCount(1, $foos);
-        $foo = $foos[0];
-        self::assertInstanceOf(Foo::class, $foo);
-        self::assertSame('Carol', $foo->name);
+    public function testShouldFilterWithScopeWithoutValue(): void
+    {
+        $this
+            ->getJson(
+                route(
+                    'foos.index',
+                    ['whereState[state]']
+                )
+            )
+            ->assertUnprocessable()
+            ->assertJsonPath(
+                'message',
+                'The where state.state field must be a string. (and 1 more error)'
+            );
     }
 
     private function createFoos(): void
