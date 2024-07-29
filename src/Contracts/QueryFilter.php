@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sylarele\HttpQueryConfig\Contracts;
 
+use Illuminate\Contracts\Validation\Rule;
 use Stringable;
 
 /**
@@ -17,7 +18,7 @@ interface QueryFilter
     public function getName(): string;
 
     /**
-     * @return array<string, array<int, string|Stringable>> the validation rules for the filter
+     * @return array<string, array<int, string|Stringable|Rule>> the validation rules for the filter
      */
     public function getValidation(): array;
 

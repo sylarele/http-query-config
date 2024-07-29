@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Sylarele\HttpQueryConfig\Query;
+namespace Sylarele\HttpQueryConfig\Query\Pagination;
 
 use Illuminate\Database\Eloquent\Builder;
 use Override;
-use RuntimeException;
+use Sylarele\HttpQueryConfig\Collections\CursorPaginator;
 use Sylarele\HttpQueryConfig\Contracts\QueryPagination;
 use Sylarele\HttpQueryConfig\Contracts\QueryResult;
 
@@ -45,10 +45,10 @@ class CursorPagination implements QueryPagination
             cursor: $this->cursor,
         );
 
-        return $result instanceof QueryResult
-            ? $result
-            : throw new RuntimeException(
-                'Missing Laravel binding for CursorPaginator.',
-            );
+        return new CursorPaginator(
+            items: $result->items(),
+            perPage: $result->perPage(),
+            cursor: $result->cursor()
+        );
     }
 }

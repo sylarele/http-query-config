@@ -11,8 +11,13 @@ use Override;
 use Workbench\App\Builders\BarBuilder;
 
 /**
+ * - Attributes
+ * @property int $id
+ * @property string $name
  * @property int $foo_id
+ * - Relations
  * @property Foo $foo
+ * - Support
  * @method static BarBuilder query()
  */
 class Bar extends Model

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Sylarele\HttpQueryConfig\Query;
+namespace Sylarele\HttpQueryConfig\Query\Pagination;
 
 use Illuminate\Database\Eloquent\Builder;
 use Override;
@@ -18,8 +18,6 @@ class NoPagination implements QueryPagination
     #[Override]
     public function handleQuery(Builder $builder): QueryResult
     {
-        $result = $builder->get();
-
-        return new EloquentCollection($result);
+        return new EloquentCollection($builder->get());
     }
 }

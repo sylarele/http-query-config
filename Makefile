@@ -84,4 +84,4 @@ migrate-fresh:  ## Lance le formatage du code
 .PHONY: test
 test:  ## Lance le formatage du code
 	$(call printSection,DUSTER)
-	${BIN_DIR}/phpunit --testsuite=Unit
+	${BIN_DIR}/phpunit

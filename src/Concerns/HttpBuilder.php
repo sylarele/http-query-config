@@ -24,23 +24,23 @@ trait HttpBuilder
     /**
      * Apply the query filters, relationships and sorts.
      */
-    public function configureForQuery(?Query $query): static|Builder
+    public function configureForQuery(?Query $query): static
     {
         if (!$query instanceof Query) {
             return $this;
         }
-
-        $result = $this;
 
         foreach ($query->getFilters() as $filter) {
             if ($filter->isDummy()) {
                 continue;
             }
 
-            $result = match ($filter->getType()) {
+            match ($filter->getType()) {
                 FilterType::String => $this->applyStringFilter($filter),
-                FilterType::Integer, FilterType::Float => $this->applyNumberFilter($filter),
-                FilterType::Date, FilterType::DateTime => $this->applyDateTimeFilter($filter),
+                FilterType::Integer,
+                FilterType::Float => $this->applyNumberFilter($filter),
+                FilterType::Date,
+                FilterType::DateTime => $this->applyDateTimeFilter($filter),
                 FilterType::Boolean => $this->applyBooleanFilter($filter),
                 FilterType::Array => $this->applyArrayFilter($filter),
             };
@@ -51,22 +51,22 @@ trait HttpBuilder
         }
 
         foreach ($query->getRelationships() as $relation) {
-            $result = $this->applyRelationship($query, $relation);
+            $this->applyRelationship($query, $relation);
         }
 
         foreach ($query->getSorts() as $sort) {
-            $result = $result->orderBy($sort->getField(), $sort->getOrder()->value);
+            $this->orderBy($sort->getField(), $sort->getOrder()->value);
         }
 
         if ($query->shouldDD()) {
             dd(
-                $result->getConnection()->getDatabaseName(),
-                $result->toSql(),
-                $result->getBindings(),
+                $this->getConnection()->getDatabaseName(),
+                $this->toSql(),
+                $this->getBindings(),
             );
         }
 
-        return $result;
+        return $this;
     }
 
     /**
@@ -83,7 +83,12 @@ trait HttpBuilder
      */
     protected function applyScope(ScopeValue $scope): static
     {
-        return app()->call([$this, $scope->getScopeName()], $scope->getArgumentsMap());
+        $methode = $scope->getScopeName();
+        if(method_exists($this, $methode)) {
+            $this->$methode(...$scope->getArgumentsMap());
+        }
+
+        return $this;
     }
 
     /**
@@ -103,7 +108,7 @@ trait HttpBuilder
                     if (!$builder instanceof MorphTo) {
                         /** @var callable $callableQuery */
                         $callableQuery = [$builder->getQuery(), $scope];
-                        app()->call($callableQuery);
+                        \call_user_func($callableQuery);
 
                         continue;
                     }

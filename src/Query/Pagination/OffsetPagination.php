@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Sylarele\HttpQueryConfig\Query;
+namespace Sylarele\HttpQueryConfig\Query\Pagination;
 
 use Illuminate\Database\Eloquent\Builder;
 use Override;
-use RuntimeException;
+use Sylarele\HttpQueryConfig\Collections\LengthAwarePaginator;
 use Sylarele\HttpQueryConfig\Contracts\QueryPagination;
 use Sylarele\HttpQueryConfig\Contracts\QueryResult;
 
@@ -45,10 +45,11 @@ readonly class OffsetPagination implements QueryPagination
             page: $this->page,
         );
 
-        return $result instanceof QueryResult
-            ? $result
-            : throw new RuntimeException(
-                'Missing Laravel binding for LengthAwarePaginator.',
-            );
+        return new LengthAwarePaginator(
+            items: $result->items(),
+            total: $result->total(),
+            perPage: $result->perPage(),
+            currentPage: $result->currentPage(),
+        );
     }
 }

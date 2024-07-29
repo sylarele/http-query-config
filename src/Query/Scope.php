@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Query;
 
 use Closure;
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Override;
@@ -102,7 +103,7 @@ class Scope implements QueryFilter
     }
 
     /**
-     * @return array<string, array<int,string|Stringable>> the validation rules for the scope
+     * @return array<string, array<int, string|Stringable|Rule>> the validation rules for the scope
      */
     #[Override]
     public function getValidation(): array

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Query;
 
 use Closure;
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionNamedType;
 use ReflectionParameter;
@@ -24,7 +25,7 @@ class ScopeArgument
     /** @var Closure|null transforms the value passed to the query argument into the value passed to the scope parameter */
     protected ?Closure $transformer = null;
 
-    /** @var array<string, array<int,string|Stringable>>|null the custom validation rules for the query argument */
+    /** @var array<string, array<int, string|Stringable|Rule>>|null the custom validation rules for the query argument */
     protected ?array $validation = null;
 
     /**
@@ -69,7 +70,7 @@ class ScopeArgument
     /**
      * Sets custom validation rules for this argument.
      *
-     * @param array<string, array<int, string|Stringable>> $rules
+     * @param array<string, array<int, string|Stringable|Rule>> $rules
      */
     public function withValidation(array $rules): static
     {
@@ -111,7 +112,8 @@ class ScopeArgument
     }
 
     /**
-     * @return array<int|string, array<int, string|Stringable>>|null the custom validation rules for the query argument
+     * @return array<int|string, array<int, string|Stringable|Rule>>|null the custom validation
+     * rules for the query argument
      */
     public function getValidation(): ?array
     {

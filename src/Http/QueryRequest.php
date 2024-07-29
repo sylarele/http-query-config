@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Http;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\In;
 use RuntimeException;
@@ -13,10 +14,10 @@ use Sylarele\HttpQueryConfig\Enums\FilterMode;
 use Sylarele\HttpQueryConfig\Enums\FilterType;
 use Sylarele\HttpQueryConfig\Enums\PaginationMode;
 use Sylarele\HttpQueryConfig\Enums\SortOrder;
-use Sylarele\HttpQueryConfig\Query\CursorPagination;
 use Sylarele\HttpQueryConfig\Query\Filter;
-use Sylarele\HttpQueryConfig\Query\NoPagination;
-use Sylarele\HttpQueryConfig\Query\OffsetPagination;
+use Sylarele\HttpQueryConfig\Query\Pagination\CursorPagination;
+use Sylarele\HttpQueryConfig\Query\Pagination\NoPagination;
+use Sylarele\HttpQueryConfig\Query\Pagination\OffsetPagination;
 use Sylarele\HttpQueryConfig\Query\Query;
 use Sylarele\HttpQueryConfig\Query\QueryConfig;
 use Sylarele\HttpQueryConfig\Query\Relationship;
@@ -42,7 +43,7 @@ abstract class QueryRequest extends FormRequest
     /**
      * Returns the list of rules to validate the request.
      *
-     * @return array<string, array<int, string|Stringable>>
+     * @return array<string, array<int, string|Stringable|Rule>>
      */
     public function rules(): array
     {
@@ -270,9 +271,9 @@ abstract class QueryRequest extends FormRequest
     }
 
     /**
-     * @param array<string, array<int,string|Stringable>> $rules
+     * @param array<string, array<int, string|Stringable|Rule>> $rules
      *
-     * @return array<string, array<int,string|Stringable>>
+     * @return array<string, array<int, string|Stringable|Rule>>
      */
     protected function addPaginationValidation(array $rules): array
     {

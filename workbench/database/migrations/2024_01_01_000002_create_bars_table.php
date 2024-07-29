@@ -12,7 +12,6 @@ return new class () extends Migration {
         Schema::create('bars', function (Blueprint $table): void {
             $table->increments('id');
             $table->string('name');
-            $table->integer('size');
             $table->unsignedBigInteger('foo_id');
             $table->timestamps();
 

@@ -6,6 +6,9 @@ namespace Sylarele\HttpQueryConfig\Query;
 
 use Sylarele\HttpQueryConfig\Contracts\QueryPagination;
 use Sylarele\HttpQueryConfig\Enums\PaginationMode;
+use Sylarele\HttpQueryConfig\Query\Pagination\CursorPagination;
+use Sylarele\HttpQueryConfig\Query\Pagination\NoPagination;
+use Sylarele\HttpQueryConfig\Query\Pagination\OffsetPagination;
 
 /**
  * Pagination configuration for a query.

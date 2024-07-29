@@ -37,13 +37,15 @@ class FooQuery extends Query
             ->scope('whereState')
             ->arg(
                 'state',
-                fn (ScopeArgument $arg) => $arg->withValidation([
-                    'string',
-                    new Enum(FooState::class),
+                static fn (ScopeArgument $arg): ScopeArgument => $arg->withValidation([
+                    '' => ['string', new Enum(FooState::class)]
                 ])
             );
 
         // Sorts
         $config->sorts('id', 'name');
+
+        // With
+        $config->with('bars');
     }
 }

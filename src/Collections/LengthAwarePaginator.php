@@ -12,14 +12,4 @@ use Sylarele\HttpQueryConfig\Contracts\QueryResult;
  */
 class LengthAwarePaginator extends BasePaginator implements QueryResult
 {
-    public static function empty(): self
-    {
-        return new self(
-            items: [],
-            total: 0,
-            perPage: 0,
-            currentPage: 1,
-            options: [],
-        );
-    }
 }
