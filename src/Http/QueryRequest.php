@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Http;
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\In;
 use RuntimeException;
-use Stringable;
 use Sylarele\HttpQueryConfig\Contracts\QueryFilter;
 use Sylarele\HttpQueryConfig\Enums\FilterMode;
 use Sylarele\HttpQueryConfig\Enums\FilterType;
 use Sylarele\HttpQueryConfig\Enums\PaginationMode;
 use Sylarele\HttpQueryConfig\Enums\SortOrder;
 use Sylarele\HttpQueryConfig\Query\Filter;
+use Sylarele\HttpQueryConfig\Query\Pagination;
 use Sylarele\HttpQueryConfig\Query\Pagination\CursorPagination;
 use Sylarele\HttpQueryConfig\Query\Pagination\NoPagination;
 use Sylarele\HttpQueryConfig\Query\Pagination\OffsetPagination;
@@ -83,7 +82,7 @@ abstract class QueryRequest extends FormRequest
             $rules['sortOrder'] = ['nullable', new In(SortOrder::cases(), false)];
         }
 
-        if($fieldsOnly !== []) {
+        if ($fieldsOnly !== []) {
             $rules['only'] = ['array'];
             $rules['only.*'] = ['string', 'nullable', new In($fieldsOnly)];
         }
@@ -101,6 +100,7 @@ abstract class QueryRequest extends FormRequest
         /** @var array<string,mixed> $inputs */
         $inputs = $this->validated();
         $filters = $this->config->getFilters();
+        $pagination = $this->config->getPagination();
         $instance = $this->instanciateQuery();
 
         foreach ($filters as $filter) {
@@ -112,16 +112,6 @@ abstract class QueryRequest extends FormRequest
             }
         }
 
-        $pagination = $this->config->getPagination();
-
-        /** @var int|string $paginationModeData */
-        $paginationModeData = data_get($inputs, 'pagination', 'offset');
-
-        $paginationMode = PaginationMode::from($paginationModeData);
-
-        $limit = data_get($inputs, 'limit', $pagination->getDefaultLimit());
-        $page = data_get($inputs, 'page', 1);
-        $cursor = data_get($inputs, 'cursor');
         /** @var array<int,string> $withs */
         $withs = data_get($inputs, 'with', []);
         $sortBy = data_get($inputs, 'sortBy');
@@ -129,24 +119,7 @@ abstract class QueryRequest extends FormRequest
         /** @var array<int,string> $fieldsOnly */
         $fieldsOnly = data_get($inputs, 'only', []);
 
-        if (is_numeric($page) && is_numeric($limit) && (\is_string($cursor) || \is_null($cursor))) {
-            // Applies pagination to the query.
-            $instance->paginate(
-                match ($paginationMode) {
-                    PaginationMode::Offset => new OffsetPagination(
-                        page: (int) $page,
-                        limit: (int) $limit
-                    ),
-
-                    PaginationMode::Cursor => new CursorPagination(
-                        cursor: $cursor,
-                        limit: (int) $limit
-                    ),
-
-                    PaginationMode::None => new NoPagination(),
-                }
-            );
-        }
+        $this->applyPagination($pagination, $instance);
 
         $relationships = $this->config->getRelationships();
 
@@ -155,11 +128,7 @@ abstract class QueryRequest extends FormRequest
             if (\in_array($relationship->getName(), $withs)) {
                 $instance->load($relationship);
             }
-        }
 
-        $relationships = $this->config->getRelationships();
-
-        foreach ($relationships as $relationship) {
             if (\in_array($relationship->getRelation(), $withs)) {
                 $instance->load($relationship);
             }
@@ -175,7 +144,7 @@ abstract class QueryRequest extends FormRequest
             );
         }
 
-        foreach($fieldsOnly as $fieldOnly) {
+        foreach ($fieldsOnly as $fieldOnly) {
             $instance->fieldsOnly($fieldOnly);
         }
 
@@ -284,37 +253,66 @@ abstract class QueryRequest extends FormRequest
         }
     }
 
+    protected function applyPagination(Pagination $pagination, Query $instance): void
+    {
+        $paginationMode = $this->enum('pagination', PaginationMode::class)
+            ?? PaginationMode::Offset;
+        $limit = $this->integer('limit', $pagination->getDefaultLimit());
+        $page = $this->integer('page', 1);
+        $cursor = $this->has('cursor')
+            ? $this->string('cursor')->value()
+            : null;
+
+        // Applies pagination to the query.
+        $instance->paginate(
+            match ($paginationMode) {
+                PaginationMode::Offset => new OffsetPagination(
+                    page: $page,
+                    limit: $limit
+                ),
+
+                PaginationMode::Cursor => new CursorPagination(
+                    cursor: $cursor,
+                    limit: $limit
+                ),
+
+                PaginationMode::None => new NoPagination(),
+            }
+        );
+    }
+
     /**
      * @param ValidationRules $rules
      *
      * @return ValidationRules
      */
-    protected function addPaginationValidation(array $rules): array
-    {
+    protected function addPaginationValidation(
+        array $rules
+    ): array {
         $pagination = $this->config->getPagination();
 
         $rules['pagination'] = [
-            'nullable',
+            'sometimes',
             'string',
             new In($pagination->getAllowed()),
         ];
 
         $rules['limit'] = [
-            'nullable',
+            'sometimes',
             'integer',
             'min:1',
             'max:' . $pagination->getMaxLimit(),
         ];
 
         $rules['page'] = [
-            'nullable',
+            'sometimes',
             'integer',
             'min:1',
             'max:999999',
         ];
 
         $rules['cursor'] = [
-            'nullable',
+            'sometimes',
             'string',
             'max:1024',
         ];

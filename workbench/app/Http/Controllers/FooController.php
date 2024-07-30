@@ -13,9 +13,11 @@ class FooController
 {
     public function index(IndexFooRequest $request): JsonResponse
     {
+        $queryHttp = $request->toQuery();
+
         $foos = Foo::query()
-            ->configureForQuery($request->toQuery())
-            ->paginateForQuery($request->toQuery());
+            ->configureForQuery($queryHttp)
+            ->paginateForQuery($queryHttp);
 
         return FooResource::collection($foos)->response();
     }
