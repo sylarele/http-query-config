@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Sylarele\HttpQueryConfig\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Override;
 use Tests\Sylarele\HttpQueryConfig\TestCase;
 use Workbench\App\Enums\FooState;
 use Workbench\Database\Factories\FooFactory;
@@ -30,6 +29,29 @@ class FilterScopeQueryTest extends TestCase
             ->assertJsonPath('data.0.name', 'Carol');
     }
 
+    public function testShouldFilterWithScopeAndMultipleValue(): void
+    {
+        $this->createFoos();
+
+        $this
+            ->getJson(
+                route(
+                    'foos.index',
+                    [
+                        'whereStates' => [
+                            'states' => [
+                                FooState::Inactive->value,
+                                FooState::Pending->value,
+                            ],
+                        ]
+                    ]
+                )
+            )
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.name', 'Carol');
+    }
+
     public function testShouldValidatedScope(): void
     {
         $this
@@ -42,8 +64,47 @@ class FilterScopeQueryTest extends TestCase
             ->assertUnprocessable()
             ->assertJsonPath(
                 'message',
-                'The where state.state field must be a string. (and 1 more error)'
+                'The where state.state field is required when where state is present.'
             );
+
+        $this
+            ->getJson(
+                route(
+                    'foos.index',
+                    ['whereState[bad_key]' => FooState::Inactive->value]
+                )
+            )
+            ->assertUnprocessable()
+            ->assertJsonPath(
+                'message',
+                'The where state.state field is required when where state is present.'
+            );
+
+        $this
+            ->getJson(
+                route(
+                    'foos.index',
+                    ['whereStates[states][]' => 'error']
+                )
+            )
+            ->assertUnprocessable()
+            ->assertJsonPath(
+                'message',
+                'The selected whereStates.states.0 is invalid.'
+            );
+
+        $this
+            ->getJson(
+                route(
+                    'foos.index',
+                    ['whereStates[bad_key][]' => FooState::Inactive->value]
+                )
+            )
+            ->assertJsonPath(
+                'message',
+                'The where states.states field is required when where states is present.'
+            )
+        ;
     }
 
     private function createFoos(): void

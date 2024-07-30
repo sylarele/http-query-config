@@ -115,18 +115,14 @@ class Scope implements QueryFilter
         $reflection = new ReflectionMethod($this->model->newQuery(), $this->scopeName);
 
         foreach ($this->arguments as $argument) {
-            $validation = $argument->getValidation()
+            $result[] = $argument->getValidation()
                 ?? $this->guessArgumentValidation(
                     reflection: $reflection,
                     argument: $argument,
                 );
-
-            foreach ($validation as $key => $rules) {
-                $result[$key] = $rules;
-            }
         }
 
-        return $result;
+        return array_merge(...$result);
     }
 
     /**
@@ -150,10 +146,10 @@ class Scope implements QueryFilter
         }
 
         return [
-            $this->getName() => [
+            $argument->getName() => [
                 $parameter->isOptional() || $type->allowsNull()
                     ? 'nullable'
-                    : 'required',
+                    : 'required_with:' . $this->getName(),
                 $this->builtinTypeToValidation($argument, $type->getName()),
             ]
         ];

@@ -65,7 +65,7 @@ class ScopeArgument
     /**
      * Sets the transformer for this argument.
      *
-     * @param Closure(string, object|null): mixed $transformer
+     * @param Closure(string|array<int|string,string>, object|null): mixed $transformer
      */
     public function transform(Closure $transformer): static
     {

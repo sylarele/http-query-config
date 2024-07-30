@@ -61,8 +61,6 @@ abstract class QueryRequest extends FormRequest
 
             foreach ($filter->getValidation() as $key => $value) {
                 $rules[sprintf('%s.%s', $name, $key)] = $value;
-                $rules[$name.'.not'] = ['boolean'];
-                $rules[$name.'.mode'] = [new Enum(FilterMode::class)];
             }
         }
 

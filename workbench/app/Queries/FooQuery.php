@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Workbench\App\Queries;
 
 use Illuminate\Validation\Rules\Enum;
+use InvalidArgumentException;
 use Override;
 use Sylarele\HttpQueryConfig\Enums\FilterType;
 use Sylarele\HttpQueryConfig\Query\Query;
@@ -34,13 +35,36 @@ class FooQuery extends Query
         // Scopes
         $config
             ->filter('whereState')
-            ->scope('whereState')
+            ->scope()
             ->arg(
                 'state',
                 static fn (ScopeArgument $arg): ScopeArgument => $arg
-                    ->withValidation(['string', new Enum(FooState::class)])
+                    ->withValidation([
+                        'required_with:whereState',
+                        'string',
+                        new Enum(FooState::class)
+                    ])
                     ->transform(
-                        static fn (string $value): FooState => FooState::from($value)
+                        static fn (array|string $value): FooState => \is_array($value)
+                            ? throw new InvalidArgumentException()
+                            : FooState::from($value)
+                    )
+            );
+        $config
+            ->filter('whereStates')
+            ->scope()
+            ->arg(
+                'states',
+                static fn (ScopeArgument $arg): ScopeArgument => $arg
+                    ->withValidation(['required_with:whereStates', 'array', 'min:1'])
+                    ->addedValidation('*', ['required', 'string', new Enum(FooState::class)])
+                    ->transform(
+                        static fn (array|string $data): array => \is_string($data)
+                            ? throw new InvalidArgumentException()
+                            : array_map(
+                                static fn (string $value): FooState => FooState::from($value),
+                                $data
+                            )
                     )
             );
 

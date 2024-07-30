@@ -156,8 +156,8 @@ class Filter implements QueryFilter
     {
         return [
             'value' => ['nullable', ...$this->getType()->getValueValidation()],
-            'mode' => ['nullable', Rule::in($this->getType()->getModes(), false)],
-            'not' => ['nullable', 'boolean'],
+            'not' => ['boolean'],
+            'mode' => [Rule::in($this->getType()->getModes(), false)],
         ];
     }
 
