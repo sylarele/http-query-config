@@ -21,6 +21,9 @@ class QueryConfig
     /** @var array<int,Sort> the configured sorts */
     protected array $sorts = [];
 
+    /** @var array<int, string> */
+    protected array $fieldsOnly = [];
+
     /** @var Pagination the configured pagination */
     protected Pagination $pagination;
 
@@ -135,6 +138,14 @@ class QueryConfig
     }
 
     /**
+     * @param array<int,string> $names
+     */
+    public function only(array $names): void
+    {
+        $this->fieldsOnly = $names;
+    }
+
+    /**
      * Adds a default sort to the config.
      *
      * @param  Sort|string  $sort  the sort name to add
@@ -176,6 +187,14 @@ class QueryConfig
     public function getSorts(): array
     {
         return $this->sorts;
+    }
+
+    /**
+     * @return array<int,string>
+     */
+    public function getFieldsOnly(): array
+    {
+        return $this->fieldsOnly;
     }
 
     /**

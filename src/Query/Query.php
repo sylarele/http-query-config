@@ -37,6 +37,9 @@ abstract class Query
     /** @var SortValue[] the sorts to apply to the query */
     protected array $sorts = [];
 
+    /** @var array<int,string> */
+    protected array $fieldsOnly = [];
+
     /** @var QueryPagination the pagination to apply to the query */
     protected QueryPagination $pagination;
 
@@ -117,6 +120,13 @@ abstract class Query
         $this->scopes[] = $result;
 
         return $result;
+    }
+
+    public function fieldsOnly(string $fields): static
+    {
+        $this->fieldsOnly[] = $fields;
+
+        return $this;
     }
 
     /**
@@ -222,6 +232,14 @@ abstract class Query
     public function getSorts(): array
     {
         return $this->sorts ?: $this->config->getDefaultSorts();
+    }
+
+    /**
+     * @return array<int,string>
+     */
+    public function getFieldsOnly(): array
+    {
+        return $this->fieldsOnly;
     }
 
     /**

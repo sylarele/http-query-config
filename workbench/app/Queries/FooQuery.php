@@ -49,5 +49,7 @@ class FooQuery extends Query
 
         // With
         $config->with('bars');
+
+        $config->only(['name', 'size']);
     }
 }

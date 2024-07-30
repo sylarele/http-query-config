@@ -53,6 +53,7 @@ abstract class QueryRequest extends FormRequest
         $filters = $this->config->getFilters();
         $relationships = $this->config->getRelationships();
         $sorts = $this->config->getSorts();
+        $fieldsOnly = $this->config->getFieldsOnly();
 
         $rules = [];
 
@@ -80,6 +81,11 @@ abstract class QueryRequest extends FormRequest
             // Adds sorts rules
             $rules['sortBy'] = ['nullable', new In($sorts, false)];
             $rules['sortOrder'] = ['nullable', new In(SortOrder::cases(), false)];
+        }
+
+        if($fieldsOnly !== []) {
+            $rules['only'] = ['array'];
+            $rules['only.*'] = ['string', 'nullable', new In($fieldsOnly)];
         }
 
         // Pagination rules
@@ -120,6 +126,8 @@ abstract class QueryRequest extends FormRequest
         $withs = data_get($inputs, 'with', []);
         $sortBy = data_get($inputs, 'sortBy');
         $sortOrder = data_get($inputs, 'sortOrder');
+        /** @var array<int,string> $fieldsOnly */
+        $fieldsOnly = data_get($inputs, 'only', []);
 
         if (is_numeric($page) && is_numeric($limit) && (\is_string($cursor) || \is_null($cursor))) {
             // Applies pagination to the query.
@@ -165,6 +173,10 @@ abstract class QueryRequest extends FormRequest
                     ? SortOrder::from($sortOrder)
                     : SortOrder::default(),
             );
+        }
+
+        foreach($fieldsOnly as $fieldOnly) {
+            $instance->fieldsOnly($fieldOnly);
         }
 
         return $instance;

@@ -58,6 +58,10 @@ trait HttpBuilder
             $this->orderBy($sort->getField(), $sort->getOrder()->value);
         }
 
+        if($query->getFieldsOnly() !== []) {
+            $this->select($query->getFieldsOnly());
+        }
+
         if ($query->shouldDD()) {
             dd(
                 $this->getConnection()->getDatabaseName(),

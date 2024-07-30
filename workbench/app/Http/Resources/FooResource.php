@@ -20,10 +20,10 @@ class FooResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'id' => $this->resource->id,
-            'name' => $this->resource->name,
-            'size' => $this->resource->size,
-            'state' => $this->resource->state->value,
+            'id' => $this->whenHas('id'),
+            'name' => $this->whenHas('name'),
+            'size' => $this->whenHas('size'),
+            'state' => $this->whenHas('state'),
             'bars' => $this->whenLoaded(
                 'bars',
                 fn () => BarResource::collection($this->resource->bars)
