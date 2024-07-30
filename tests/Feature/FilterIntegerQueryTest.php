@@ -16,14 +16,6 @@ class FilterIntegerQueryTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Override]
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->createFoos();
-    }
-
     /**
      * @param array<int, string> $expected
      */
@@ -33,6 +25,8 @@ class FilterIntegerQueryTest extends TestCase
         string $value,
         array $expected
     ): void {
+        $this->createFoos();
+
         $response = $this
             ->getJson(
                 route(
@@ -50,14 +44,6 @@ class FilterIntegerQueryTest extends TestCase
             $fooName = $response->json('data.' . $key . '.name');
             self::assertSame($name, $fooName);
         }
-    }
-
-    public function testNoData(): void
-    {
-        $this
-            ->getJson(route('foos.index', ['name[value]' => 'None']))
-            ->assertOk()
-            ->assertJsonCount(0, 'data');
     }
 
     private function createFoos(): void

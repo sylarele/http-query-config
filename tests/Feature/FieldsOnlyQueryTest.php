@@ -13,16 +13,10 @@ class FieldsOnlyQueryTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Override]
-    protected function setUp(): void
+    public function testShouldLoadFieldsOnly(): void
     {
-        parent::setUp();
-
         $this->createFoos();
-    }
 
-    public function testShouldFilterString(): void
-    {
         $this
             ->getJson(
                 route(
@@ -39,12 +33,26 @@ class FieldsOnlyQueryTest extends TestCase
             ]);
     }
 
-    public function testNoData(): void
+    public function testShouldValidatedFieldOnly(): void
     {
         $this
-            ->getJson(route('foos.index', ['name[value]' => 'None']))
-            ->assertOk()
-            ->assertJsonCount(0, 'data');
+            ->getJson(
+                route(
+                    'foos.index',
+                    [
+                        'only' => ['error'],
+                    ]
+                )
+            )
+            ->assertUnprocessable()
+            ->assertJsonPath(
+                'message',
+                'The selected only.0 is invalid.'
+            )
+            ->assertJsonPath(
+                'errors',
+                ["only.0" => ["The selected only.0 is invalid."]]
+            );
     }
 
     private function createFoos(): void

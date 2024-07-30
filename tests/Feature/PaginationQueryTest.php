@@ -15,15 +15,7 @@ class PaginationQueryTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Override]
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        FooFactory::new()->createMany(30);
-    }
-
-    public function testShouldPaginate(): void
+    public function testShouldValidatedPaginate(): void
     {
         $this
             ->getJson(
@@ -63,6 +55,8 @@ class PaginationQueryTest extends TestCase
         int $to,
         int $total,
     ): void {
+        FooFactory::new()->createMany(30);
+
         $this
             ->getJson(route('foos.index', $parameters))
             ->assertOk()

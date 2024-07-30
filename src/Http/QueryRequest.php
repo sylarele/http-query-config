@@ -6,6 +6,7 @@ namespace Sylarele\HttpQueryConfig\Http;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Rules\In;
 use RuntimeException;
 use Sylarele\HttpQueryConfig\Contracts\QueryFilter;
@@ -14,7 +15,6 @@ use Sylarele\HttpQueryConfig\Enums\FilterType;
 use Sylarele\HttpQueryConfig\Enums\PaginationMode;
 use Sylarele\HttpQueryConfig\Enums\SortOrder;
 use Sylarele\HttpQueryConfig\Query\Filter;
-use Sylarele\HttpQueryConfig\Query\Pagination;
 use Sylarele\HttpQueryConfig\Query\Pagination\CursorPagination;
 use Sylarele\HttpQueryConfig\Query\Pagination\NoPagination;
 use Sylarele\HttpQueryConfig\Query\Pagination\OffsetPagination;
@@ -22,7 +22,6 @@ use Sylarele\HttpQueryConfig\Query\Query;
 use Sylarele\HttpQueryConfig\Query\QueryConfig;
 use Sylarele\HttpQueryConfig\Query\Relationship;
 use Sylarele\HttpQueryConfig\Query\Scope;
-use Sylarele\HttpQueryConfig\Query\Sort;
 
 /**
  * Validates a query request.
@@ -62,6 +61,8 @@ abstract class QueryRequest extends FormRequest
 
             foreach ($filter->getValidation() as $key => $value) {
                 $rules[sprintf('%s.%s', $name, $key)] = $value;
+                $rules[$name.'.not'] = ['boolean'];
+                $rules[$name.'.mode'] = [new Enum(FilterMode::class)];
             }
         }
 
@@ -78,8 +79,8 @@ abstract class QueryRequest extends FormRequest
 
         if ($sorts !== []) {
             // Adds sorts rules
-            $rules['sortBy'] = ['nullable', new In($sorts, false)];
-            $rules['sortOrder'] = ['nullable', new In(SortOrder::cases(), false)];
+            $rules['sortBy'] = ['sometimes', new In($sorts, false)];
+            $rules['sortOrder'] = ['sometimes', new Enum(SortOrder::class)];
         }
 
         if ($fieldsOnly !== []) {
@@ -97,10 +98,7 @@ abstract class QueryRequest extends FormRequest
      */
     public function toQuery(): Query
     {
-        /** @var array<string,mixed> $inputs */
-        $inputs = $this->validated();
         $filters = $this->config->getFilters();
-        $pagination = $this->config->getPagination();
         $instance = $this->instanciateQuery();
 
         foreach ($filters as $filter) {
@@ -112,41 +110,10 @@ abstract class QueryRequest extends FormRequest
             }
         }
 
-        /** @var array<int,string> $withs */
-        $withs = data_get($inputs, 'with', []);
-        $sortBy = data_get($inputs, 'sortBy');
-        $sortOrder = data_get($inputs, 'sortOrder');
-        /** @var array<int,string> $fieldsOnly */
-        $fieldsOnly = data_get($inputs, 'only', []);
-
-        $this->applyPagination($pagination, $instance);
-
-        $relationships = $this->config->getRelationships();
-
-        // Applies relationships to the query.
-        foreach ($relationships as $relationship) {
-            if (\in_array($relationship->getName(), $withs)) {
-                $instance->load($relationship);
-            }
-
-            if (\in_array($relationship->getRelation(), $withs)) {
-                $instance->load($relationship);
-            }
-        }
-
-        // Applies sorts to the query.
-        if (\is_string($sortBy) || $sortBy instanceof Sort) {
-            $instance->sortBy(
-                sort: $sortBy,
-                order: \is_string($sortOrder)
-                    ? SortOrder::from($sortOrder)
-                    : SortOrder::default(),
-            );
-        }
-
-        foreach ($fieldsOnly as $fieldOnly) {
-            $instance->fieldsOnly($fieldOnly);
-        }
+        $this->applyPagination($instance);
+        $this->applyRelationships($instance);
+        $this->applySort($instance);
+        $this->applyFieldsOnly($instance);
 
         return $instance;
     }
@@ -203,24 +170,15 @@ abstract class QueryRequest extends FormRequest
 
     protected function applyFilterToQuery(Filter $filter, Query $instance): void
     {
-        $input = $this->validated();
         $name = $filter->getName();
 
-        /** @var string|null $value */
-        $value = data_get($input, $name . '.value');
+        /** @var null|array<scalar>|float|int|string $value */
+        $value = $this->input($name . '.value');
 
-        $not = (bool) data_get($input, $name . '.not', false);
+        $mode = FilterMode::tryFrom($this->string($name . '.mode')->value())
+            ?? $filter->getType()->getDefaultMode();
 
-        $mode = data_get($input, $name . '.mode');
-
-        $mode = \is_string($mode)
-            ? FilterMode::from(strtolower($mode))
-            : $filter->getType()->getDefaultMode();
-
-        $value = $this->parseFilterValue(
-            filter: $filter,
-            value: $value,
-        );
+        $value = $this->parseFilterValue($filter, $value);
 
         if ($value === null) {
             return;
@@ -230,22 +188,20 @@ abstract class QueryRequest extends FormRequest
             filter: $filter,
             mode: $mode,
             value: $value,
-            not: $not,
+            not: $this->boolean($name . '.not'),
         );
     }
 
     protected function applyScopeToQuery(Scope $scope, Query $instance): void
     {
-        $input = $this->validated();
-
-        if (!data_get($input, $scope->getName())) {
+        if (!$this->has($scope->getName())) {
             return;
         }
 
         $scope = $instance->scope($scope);
 
         foreach ($scope->getArguments() as $argument) {
-            $value = data_get($input, sprintf('%s.%s', $scope->getName(), $argument->getName()));
+            $value = $this->input(sprintf('%s.%s', $scope->getName(), $argument->getName()));
 
             if ($value !== null) {
                 $argument->set($value);
@@ -253,8 +209,10 @@ abstract class QueryRequest extends FormRequest
         }
     }
 
-    protected function applyPagination(Pagination $pagination, Query $instance): void
+    protected function applyPagination(Query $instance): void
     {
+        $pagination = $this->config->getPagination();
+
         $paginationMode = $this->enum('pagination', PaginationMode::class)
             ?? PaginationMode::Offset;
         $limit = $this->integer('limit', $pagination->getDefaultLimit());
@@ -279,6 +237,48 @@ abstract class QueryRequest extends FormRequest
                 PaginationMode::None => new NoPagination(),
             }
         );
+    }
+
+    protected function applyRelationships(Query $instance): void
+    {
+        $relationships = $this->config->getRelationships();
+        /** @var array<int,string> $withs */
+        $withs = $this->input('with', []);
+
+        // Applies relationships to the query.
+        foreach ($relationships as $relationship) {
+            if (\array_intersect(
+                [$relationship->getName(), $relationship->getRelation()],
+                $withs
+            ) !== []) {
+                $instance->load($relationship);
+            }
+        }
+    }
+
+    protected function applySort(Query $instance): void
+    {
+        $sortBy = $this->string('sortBy')->value();
+        $sortOrder = $this->enum('sortOrder', SortOrder::class)
+            ?? SortOrder::default();
+
+        // Applies sorts to the query.
+        if ($sortBy !== '') {
+            $instance->sortBy(
+                sort: $sortBy,
+                order: $sortOrder,
+            );
+        }
+    }
+
+    protected function applyFieldsOnly(Query $instance): void
+    {
+        /** @var array<int,string> $fieldsOnly */
+        $fieldsOnly = $this->input('only', []);
+
+        foreach ($fieldsOnly as $fieldOnly) {
+            $instance->fieldsOnly($fieldOnly);
+        }
     }
 
     /**

@@ -18,14 +18,6 @@ class SortQueryTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Override]
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->createFoos();
-    }
-
     /**
      * @param array<int,string> $expected
      */
@@ -34,6 +26,8 @@ class SortQueryTest extends TestCase
         SortOrder $sortOrder,
         array $expected
     ): void {
+        $this->createFoos();
+
         $this
             ->getJson(
                 route(
@@ -51,6 +45,32 @@ class SortQueryTest extends TestCase
             ->assertJsonPath('data.2.name', $expected[2])
             ->assertJsonPath('data.3.name', $expected[3])
             ->assertJsonPath('data.4.name', $expected[4]);
+    }
+
+    public function testShouldValidatedSort(): void
+    {
+        $this
+            ->getJson(
+                route(
+                    'foos.index',
+                    [
+                        'sortBy' => 'error',
+                        'sortOrder' => 'error',
+                    ]
+                )
+            )
+            ->assertUnprocessable()
+            ->assertJsonPath(
+                'message',
+                'The selected sort by is invalid. (and 1 more error)'
+            )
+            ->assertJsonPath(
+                'errors',
+                [
+                    "sortBy" => ["The selected sort by is invalid."],
+                    "sortOrder" => ["The selected sort order is invalid."],
+                ]
+            );
     }
 
     private function createFoos(): void

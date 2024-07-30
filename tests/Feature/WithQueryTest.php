@@ -6,7 +6,6 @@ namespace Tests\Sylarele\HttpQueryConfig\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Override;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Sylarele\HttpQueryConfig\TestCase;
 use Workbench\Database\Factories\BarFactory;
 use Workbench\Database\Factories\FooFactory;
@@ -15,16 +14,10 @@ class WithQueryTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Override]
-    protected function setUp(): void
+    public function testShouldLoadRelation(): void
     {
-        parent::setUp();
-
         $this->createFoos();
-    }
 
-    public function testShouldFilterString(): void
-    {
         $this
             ->getJson(
                 route(
@@ -37,7 +30,28 @@ class WithQueryTest extends TestCase
             ->assertOk()
             ->assertJsonCount(1, 'data.0.bars')
             ->assertJsonPath('data.0.bars.0.name', 'Antoine');
-        ;
+    }
+
+    public function testShouldValidatedSort(): void
+    {
+        $this
+            ->getJson(
+                route(
+                    'foos.index',
+                    [
+                        'with' => ['error'],
+                    ]
+                )
+            )
+            ->assertUnprocessable()
+            ->assertJsonPath(
+                'message',
+                'The selected with.0 is invalid.'
+            )
+            ->assertJsonPath(
+                'errors',
+                ["with.0" => ["The selected with.0 is invalid."]]
+            );
     }
 
     private function createFoos(): void

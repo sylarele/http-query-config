@@ -14,16 +14,10 @@ class FilterScopeQueryTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Override]
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->createFoos();
-    }
-
     public function testShouldFilterWithScope(): void
     {
+        $this->createFoos();
+
         $this
             ->getJson(
                 route(
@@ -36,7 +30,7 @@ class FilterScopeQueryTest extends TestCase
             ->assertJsonPath('data.0.name', 'Carol');
     }
 
-    public function testShouldFilterWithScopeWithoutValue(): void
+    public function testShouldValidatedScope(): void
     {
         $this
             ->getJson(
