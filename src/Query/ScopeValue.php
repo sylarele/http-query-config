@@ -66,7 +66,7 @@ readonly class ScopeValue
             }
         }
 
-        throw new RuntimeException(sprintf('Argument %s not found', $name));
+        throw new RuntimeException(\sprintf('Argument %s not found', $name));
     }
 
     /**

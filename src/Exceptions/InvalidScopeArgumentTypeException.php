@@ -19,8 +19,8 @@ class InvalidScopeArgumentTypeException extends LogicException
         $class = class_basename($model);
 
         parent::__construct(
-            sprintf('Type of parameter `%s` of scope filter `%s` ', $argument->getName(), $scope->getName())
-            .sprintf('on model `%s` is either too intricate or missing. You may need to use a ', $class)
+            \sprintf('Type of parameter `%s` of scope filter `%s` ', $argument->getName(), $scope->getName())
+            .\sprintf('on model `%s` is either too intricate or missing. You may need to use a ', $class)
             .'transformer or custom validation.',
         );
     }

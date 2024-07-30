@@ -60,7 +60,7 @@ abstract class QueryRequest extends FormRequest
             $name = $filter->getName();
 
             foreach ($filter->getValidation() as $key => $value) {
-                $rules[sprintf('%s.%s', $name, $key)] = $value;
+                $rules[\sprintf('%s.%s', $name, $key)] = $value;
             }
         }
 
@@ -132,7 +132,7 @@ abstract class QueryRequest extends FormRequest
 
         if (!is_subclass_of($class, Query::class)) {
             throw new RuntimeException(
-                sprintf('Given query class `%s` does not extend Query.', $class)
+                \sprintf('Given query class `%s` does not extend Query.', $class)
             );
         }
 
@@ -199,7 +199,7 @@ abstract class QueryRequest extends FormRequest
         $scope = $instance->scope($scope);
 
         foreach ($scope->getArguments() as $argument) {
-            $value = $this->input(sprintf('%s.%s', $scope->getName(), $argument->getName()));
+            $value = $this->input(\sprintf('%s.%s', $scope->getName(), $argument->getName()));
 
             if ($value !== null) {
                 $argument->set($value);

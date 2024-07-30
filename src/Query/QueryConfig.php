@@ -230,7 +230,7 @@ class QueryConfig
 
         if (!$found instanceof Filter) {
             throw new RuntimeException(
-                sprintf('No filter was registered with name `%s`.', $filter)
+                \sprintf('No filter was registered with name `%s`.', $filter)
             );
         }
 
@@ -254,7 +254,7 @@ class QueryConfig
 
         if (!$foundScope instanceof Scope) {
             throw new RuntimeException(
-                sprintf('No filter was registered with name `%s`.', $scope)
+                \sprintf('No filter was registered with name `%s`.', $scope)
             );
         }
 
@@ -269,7 +269,7 @@ class QueryConfig
         if ($sort instanceof Sort) {
             if (!\in_array($sort, $this->sorts, true)) {
                 throw new RuntimeException(
-                    sprintf('Given sort named `%s` is not registered on this query type.', $sort),
+                    \sprintf('Given sort named `%s` is not registered on this query type.', $sort),
                 );
             }
 
@@ -283,7 +283,7 @@ class QueryConfig
 
         if (!$foundSort instanceof Sort) {
             throw new RuntimeException(
-                sprintf('No sort was registered with name `%s`.', $sort),
+                \sprintf('No sort was registered with name `%s`.', $sort),
             );
         }
 
@@ -323,7 +323,7 @@ class QueryConfig
         if ($relationship instanceof Relationship) {
             if (!\in_array($relationship, $this->relationships, strict: false)) {
                 throw new RuntimeException(
-                    sprintf(
+                    \sprintf(
                         'Given relationship named `%s` is not registered on this query type.',
                         $relationship->getName()
                     ),

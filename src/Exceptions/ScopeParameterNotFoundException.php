@@ -19,7 +19,7 @@ class ScopeParameterNotFoundException extends LogicException
         $class = class_basename($model);
 
         parent::__construct(
-            sprintf(
+            \sprintf(
                 'Unknown parameter `%s` for scope filter `%s` on model `%s`.',
                 $argument->getName(),
                 $scope->getName(),

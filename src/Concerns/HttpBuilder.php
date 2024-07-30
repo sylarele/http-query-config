@@ -124,7 +124,7 @@ trait HttpBuilder
 
                     if (!is_subclass_of($types, BackedEnum::class)) {
                         throw new InvalidArgumentException(
-                            sprintf(
+                            \sprintf(
                                 'The model %s does not have an enum cast for the morph type %s',
                                 class_basename($builder->getQuery()->getModel()),
                                 $builder->getMorphType(),
