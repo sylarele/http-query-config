@@ -9,8 +9,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Sylarele\\HttpQueryConfig\\": "src/",
-            "Tests\\Sylarele\\HttpQueryConfig\\": "tests/"
+            "Sylarele\\HttpQueryConfig\\": "src/"
         }
     },
     "require": {
@@ -33,16 +32,9 @@
         "preferred-install": "dist",
         "sort-packages": true
     },
-    "replace": {
-        "symfony/polyfill-php80": "*",
-        "symfony/polyfill-php81": "*",
-        "symfony/polyfill-ctype": "*",
-        "symfony/polyfill-intl-grapheme": "*",
-        "symfony/polyfill-intl-normalizer": "*",
-        "symfony/polyfill-mbstring": "*"
-    },
     "autoload-dev": {
         "psr-4": {
+            "Tests\\Sylarele\\HttpQueryConfig\\": "tests/",
             "Workbench\\App\\": "workbench/app/",
             "Workbench\\Database\\Factories\\": "workbench/database/factories/",
             "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
