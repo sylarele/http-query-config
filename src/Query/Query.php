@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Sylarele\HttpQueryConfig\Query;
 
-use Domain\Auth\Contracts\GenericUser;
-use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Model;
 use Sylarele\HttpQueryConfig\Contracts\QueryPagination;
 use Sylarele\HttpQueryConfig\Enums\FilterMode;

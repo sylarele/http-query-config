@@ -93,6 +93,7 @@ abstract class QueryRequest extends FormRequest
     /**
      * Returns a Query instance built from the request.
      *
+     * @return TModelClass
      */
     public function toQuery(): Query
     {
@@ -125,6 +126,8 @@ abstract class QueryRequest extends FormRequest
 
     /**
      * Instanciates the query class.
+     *
+     * @return TModelClass
      */
     protected function instanciateQuery(): Query
     {
