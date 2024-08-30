@@ -7,18 +7,18 @@ namespace Workbench\App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Workbench\App\Http\Requests\IndexFooRequest;
 use Workbench\App\Http\Resources\FooResource;
-use Workbench\App\Models\Foo;
+use Workbench\App\Http\Services\FooService;
 
 class FooController
 {
+    public function __construct(private readonly FooService $fooService)
+    {
+    }
+
     public function index(IndexFooRequest $request): JsonResponse
     {
-        $queryHttp = $request->toQuery();
+        $list = $this->fooService->list($request->toQuery());
 
-        $foos = Foo::query()
-            ->configureForQuery($queryHttp)
-            ->paginateForQuery($queryHttp);
-
-        return FooResource::collection($foos)->response();
+        return FooResource::collection($list)->response();
     }
 }
