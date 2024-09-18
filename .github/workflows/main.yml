@@ -1,0 +1,59 @@
+name: CI/CD Workflow
+
+on: [push]
+
+jobs:
+  build:
+    name: Build with PHP ${{ matrix.php-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: [ '8.3' ]
+    steps:
+    - name: Pull repository
+      uses: actions/checkout@v4
+    - name: Validate commit message
+      run: ./.github/script/validate_commit.sh
+    - name: Setup php
+      uses: ./.github/actions/setup-php-composer
+    - name: check PSR compliance
+      run: ./.github/script/check-psr.sh
+
+  test:
+    name: Backend Feature & Unit Tests with PHP ${{ matrix.php-version }}
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: [ '8.3' ]
+    steps:
+    - name: Pull repository
+      uses: actions/checkout@v4
+    - name: Setup php
+      uses: ./.github/actions/setup-php-composer
+    - name: Dependencies tests
+      run: make dependencies
+    - name: Static analysis
+      run: php ./vendor/bin/phpstan analyse --memory-limit=3G --error-format=github
+    - name: Refactoring
+      run: php ./vendor/bin/rector process --dry-run
+
+  deploy-production:
+    name: release
+    needs: test
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull repository
+        uses: actions/checkout@v4
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}-
