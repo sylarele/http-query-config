@@ -3,6 +3,10 @@ description: "Setup the php composer env"
 runs:
   using: composite
   steps:
+    - name: Setup PHP Action
+      uses: shivammathur/setup-php@2.31.1
+      with:
+        php-version: '8.3'
     - name: Cache php composer
       id: cache-composer
       uses: actions/cache@v4
