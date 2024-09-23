@@ -39,6 +39,8 @@ class ScopeArgumentValue
                 $value,
                 $this->query->get()
             );
+        } else {
+            $this->value = $value;
         }
 
         return $this;
