@@ -73,8 +73,7 @@ dependencies: ## Check if the dependency are compliant
 	$(call printSection,COMPOSER DEPENDENCY)
 	${BIN_DIR}/composer-dependency-analyser \
 		--ignore-shadow-deps \
-		--ignore-unused-deps \
-		--ignore-dev-in-prod-deps
+		--ignore-unused-deps
 
 .PHONY: migrate-fresh
 migrate-fresh:  ## Lance le formatage du code
