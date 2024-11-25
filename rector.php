@@ -18,11 +18,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->phpVersion(PhpVersion::PHP_83);
 
-    $rectorConfig->skip([
-        SymplifyQuoteEscapeRector::class,
-        RemoveUnusedPrivatePropertyRector::class,
-    ]);
-
     $rectorConfig->sets([
         SetList::CODING_STYLE,
         SetList::CODE_QUALITY,
@@ -34,5 +29,5 @@ return static function (RectorConfig $rectorConfig): void {
         PHPUnitSetList::PHPUNIT_100
     ]);
 
-    $rectorConfig->phpstanConfig(__DIR__ . '/phpstan.neon.dist');
+    $rectorConfig->phpstanConfig(__DIR__.'/phpstan.neon.dist');
 };
