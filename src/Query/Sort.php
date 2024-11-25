@@ -16,6 +16,8 @@ class Sort implements Stringable
     /** @var string the database field to use */
     protected string $field;
 
+    protected ?string $scopeName = null;
+
     /**
      * @param  QueryConfig  $config the config to apply the default sort to
      * @param  string  $name   the sort name on the query
@@ -70,5 +72,22 @@ class Sort implements Stringable
         );
 
         return $this;
+    }
+
+    /**
+     * Specifies a scope to call when applying the scope.
+     *
+     * @param  string  $scopeName the name of the scope on the model
+     */
+    public function scope(string $scopeName): self
+    {
+        $this->scopeName = $scopeName;
+
+        return $this;
+    }
+
+    public function getScopeName(): ?string
+    {
+        return $this->scopeName;
     }
 }

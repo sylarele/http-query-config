@@ -33,6 +33,11 @@ readonly class SortValue
         return $this->sort->getField();
     }
 
+    public function getScopeName(): ?string
+    {
+        return $this->sort->getScopeName();
+    }
+
     /**
      * @return SortOrder the sort order (ASC or DESC)
      */
