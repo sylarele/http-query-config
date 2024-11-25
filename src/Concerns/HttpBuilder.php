@@ -58,7 +58,7 @@ trait HttpBuilder
             $this->orderBy($sort->getField(), $sort->getOrder()->value);
         }
 
-        if($query->getFieldsOnly() !== []) {
+        if ($query->getFieldsOnly() !== []) {
             $this->select($query->getFieldsOnly());
         }
 
@@ -88,7 +88,7 @@ trait HttpBuilder
     protected function applyScope(ScopeValue $scope): static
     {
         $methode = $scope->getScopeName();
-        if(method_exists($this, $methode)) {
+        if (method_exists($this, $methode)) {
             $this->$methode(...$scope->getArgumentsMap());
         }
 

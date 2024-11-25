@@ -15,7 +15,6 @@ use Sylarele\HttpQueryConfig\Enums\FilterMode;
 use Tests\Sylarele\HttpQueryConfig\TestCase;
 use Workbench\App\Models\Foo;
 use Workbench\App\Queries\FooQuery;
-
 use Workbench\Database\Factories\FooFactory;
 
 class FieldsOnlyQueryTest extends TestCase
