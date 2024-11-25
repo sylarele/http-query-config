@@ -6,7 +6,6 @@ namespace Tests\Sylarele\HttpQueryConfig\Feature;
 
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Sylarele\HttpQueryConfig\Enums\FilterMode;
 use Tests\Sylarele\HttpQueryConfig\TestCase;

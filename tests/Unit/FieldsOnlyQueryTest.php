@@ -4,14 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Sylarele\HttpQueryConfig\Unit;
 
-use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-
-use function Laravel\Prompts\select;
-
 use Override;
-use PHPUnit\Framework\Attributes\DataProvider;
-use Sylarele\HttpQueryConfig\Enums\FilterMode;
 use Tests\Sylarele\HttpQueryConfig\TestCase;
 use Workbench\App\Models\Foo;
 use Workbench\App\Queries\FooQuery;

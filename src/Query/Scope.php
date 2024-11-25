@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Query;
 
 use Closure;
-use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Override;

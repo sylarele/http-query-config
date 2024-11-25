@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Sylarele\HttpQueryConfig\Unit;
 
-use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Override;
-use PHPUnit\Framework\Attributes\DataProvider;
-use Sylarele\HttpQueryConfig\Enums\FilterMode;
 use Tests\Sylarele\HttpQueryConfig\TestCase;
 use Workbench\App\Enums\FooState;
 use Workbench\App\Models\Foo;

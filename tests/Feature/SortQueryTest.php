@@ -6,12 +6,9 @@ namespace Tests\Sylarele\HttpQueryConfig\Feature;
 
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Sylarele\HttpQueryConfig\Enums\SortOrder;
 use Tests\Sylarele\HttpQueryConfig\TestCase;
-use Workbench\App\Models\Foo;
-use Workbench\App\Queries\FooQuery;
 use Workbench\Database\Factories\FooFactory;
 
 class SortQueryTest extends TestCase

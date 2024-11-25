@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Sylarele\HttpQueryConfig\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Override;
 use Tests\Sylarele\HttpQueryConfig\TestCase;
 use Workbench\Database\Factories\FooFactory;
 

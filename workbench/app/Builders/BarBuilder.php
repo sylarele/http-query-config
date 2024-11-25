@@ -7,7 +7,6 @@ namespace Workbench\App\Builders;
 use Illuminate\Database\Eloquent\Builder;
 use Sylarele\HttpQueryConfig\Concerns\HttpBuilder;
 use Workbench\App\Models\Bar;
-use Workbench\App\Models\Foo;
 
 /**
  * @template TModelClass of Bar
