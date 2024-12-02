@@ -11,6 +11,7 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use Stringable;
 use Sylarele\HttpQueryConfig\Contracts\QueryFilter;
+use Sylarele\HttpQueryConfig\Contracts\Transformer;
 
 /**
  * A query scope argument config.
@@ -32,7 +33,7 @@ class ScopeArgument
     protected ?array $validation = null;
 
     /**
-     * @param  string  $name the name of the scope argument
+     * @param string $name the name of the scope argument
      */
     public function __construct(
         protected readonly string $name,
@@ -65,11 +66,13 @@ class ScopeArgument
     /**
      * Sets the transformer for this argument.
      *
-     * @param Closure(string|array<int|string,string>, object|null): mixed $transformer
+     * @param Closure(string|array<int|string,string>, object|null): mixed|Transformer $transformer
      */
-    public function transform(Closure $transformer): static
+    public function transform(Closure|Transformer $transformer): static
     {
-        $this->transformer = $transformer;
+        $this->transformer = $transformer instanceof Transformer
+            ? $transformer->transform(...)
+            : $transformer;
 
         return $this;
     }
@@ -93,7 +96,7 @@ class ScopeArgument
      */
     public function addedValidation(string $subKey, array $rules): static
     {
-        $this->validation[$this->name.'.'.$subKey] = $rules;
+        $this->validation[$this->name . '.' . $subKey] = $rules;
 
         return $this;
     }
@@ -147,7 +150,7 @@ class ScopeArgument
     {
         $type = $reflection->getType();
 
-        if (! $type instanceof ReflectionNamedType) {
+        if (!$type instanceof ReflectionNamedType) {
             return $this;
         }
 
@@ -162,7 +165,11 @@ class ScopeArgument
             // This wraps the transformer into a new one that implicitly resolves the model instance
             $class = $type->getName();
 
-            $this->transformer = static function (string $value, Query $query) use ($class, $baseTransformer, $type) {
+            $this->transformer = static function (string $value, Query $query) use (
+                $class,
+                $baseTransformer,
+                $type
+            ) {
                 // If the parameter is nullable, we pass null if the model was not found
                 $instance = $type->allowsNull()
                     ? $class::query()->find($value)

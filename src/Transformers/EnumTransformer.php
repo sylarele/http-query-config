@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Sylarele\HttpQueryConfig\Transformer;
+namespace Sylarele\HttpQueryConfig\Transformers;
 
 use BackedEnum;
 use InvalidArgumentException;
@@ -10,6 +10,7 @@ use Override;
 use Sylarele\HttpQueryConfig\Contracts\Transformer;
 use Sylarele\HttpQueryConfig\Exceptions\InvalidTransformerArgumentTypeException;
 use UnitEnum;
+use ValueError;
 
 class EnumTransformer implements Transformer
 {
@@ -28,15 +29,15 @@ class EnumTransformer implements Transformer
     #[Override]
     public function transform(array|string $value): BackedEnum
     {
-        try {
-            if (!method_exists($this->enumClass, 'tryFrom')) {
-                throw new InvalidArgumentException(
-                    \sprintf("enum class '%s' does not have method tryFrom()", $this->enumClass)
-                );
-            }
+        if (!method_exists($this->enumClass, 'from')) {
+            throw new InvalidArgumentException(
+                \sprintf("enum class '%s' does not have method from()", $this->enumClass)
+            );
+        }
 
-            return $this->enumClass::tryFrom($value);
-        } catch (InvalidArgumentException) {
+        try {
+            return $this->enumClass::from($value);
+        } catch (ValueError) {
             throw new InvalidTransformerArgumentTypeException();
         }
     }

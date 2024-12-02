@@ -11,6 +11,8 @@ use Sylarele\HttpQueryConfig\Enums\FilterType;
 use Sylarele\HttpQueryConfig\Query\Query;
 use Sylarele\HttpQueryConfig\Query\QueryConfig;
 use Sylarele\HttpQueryConfig\Query\ScopeArgument;
+use Sylarele\HttpQueryConfig\Transformers\EnumListTransformer;
+use Sylarele\HttpQueryConfig\Transformers\EnumTransformer;
 use Workbench\App\Enums\FooState;
 use Workbench\App\Models\Foo;
 
@@ -44,11 +46,7 @@ class FooQuery extends Query
                         'string',
                         new Enum(FooState::class)
                     ])
-                    ->transform(
-                        static fn (array|string $value): FooState => \is_array($value)
-                            ? throw new InvalidArgumentException()
-                            : FooState::from($value)
-                    )
+                    ->transform(new EnumTransformer(FooState::class))
             );
         $config
             ->filter('whereStates')
@@ -58,14 +56,7 @@ class FooQuery extends Query
                 static fn (ScopeArgument $arg): ScopeArgument => $arg
                     ->withValidation(['required_with:whereStates', 'array', 'min:1'])
                     ->addedValidation('*', ['required', 'string', new Enum(FooState::class)])
-                    ->transform(
-                        static fn (array|string $data): array => \is_string($data)
-                            ? throw new InvalidArgumentException()
-                            : array_map(
-                                static fn (string $value): FooState => FooState::from($value),
-                                $data
-                            )
-                    )
+                    ->transform(new EnumListTransformer(FooState::class))
             );
 
         // Sorts

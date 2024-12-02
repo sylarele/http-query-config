@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Sylarele\HttpQueryConfig\Transformer;
+namespace Sylarele\HttpQueryConfig\Transformers;
 
 use Illuminate\Support\Carbon;
 use Override;
