@@ -122,7 +122,10 @@ trait HttpBuilder
                         ->getModel()
                         ->getCasts()[$builder->getMorphType()] ?? null;
 
-                    if (!is_subclass_of($types, BackedEnum::class)) {
+                    if (
+                        (!is_object($types) && !is_string($types))
+                        || !is_subclass_of($types, BackedEnum::class)
+                    ) {
                         throw new InvalidArgumentException(
                             \sprintf(
                                 'The model %s does not have an enum cast for the morph type %s',

@@ -15,7 +15,7 @@ use ValueError;
 class EnumTransformer implements Transformer
 {
     /**
-     * @param class-string<UnitEnum> $enumClass
+     * @param class-string<BackedEnum> $enumClass
      */
     public function __construct(private string $enumClass)
     {

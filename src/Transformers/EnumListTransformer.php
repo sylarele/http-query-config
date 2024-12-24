@@ -15,7 +15,7 @@ use ValueError;
 class EnumListTransformer implements Transformer
 {
     /**
-     * @param class-string<UnitEnum> $enumClass
+     * @param class-string<BackedEnum> $enumClass
      */
     public function __construct(private string $enumClass)
     {
@@ -43,9 +43,10 @@ class EnumListTransformer implements Transformer
         }
 
         try {
-            return array_values(
-                array_map($this->enumClass::from(...), $value)
-            );
+            /** @var array<int, BackedEnum> $list */
+            $list = array_map($this->enumClass::from(...), $value);
+
+            return array_values($list);
         } catch (ValueError) {
             throw new InvalidTransformerArgumentTypeException();
         }

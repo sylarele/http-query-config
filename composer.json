@@ -14,18 +14,18 @@
     },
     "require": {
         "php": "^8.3",
-        "illuminate/collections": "^10.0|^11.0",
-        "illuminate/database": "^10.0|^11.0",
-        "illuminate/pagination": "^10.0|^11.0",
-        "illuminate/support": "^10.0|^11.0",
-        "illuminate/validation": "^10.0|^11.0"
+        "illuminate/collections": "^11.0",
+        "illuminate/database": "^11.0",
+        "illuminate/pagination": "^11.0",
+        "illuminate/support": "^11.0",
+        "illuminate/validation": "^11.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.59",
-        "orchestra/testbench": "^9.2",
-        "phpstan/phpstan": "^1.11",
-        "rector/rector": "^1.2",
-        "shipmonk/composer-dependency-analyser": "^1.6"
+        "friendsofphp/php-cs-fixer": "^3.65",
+        "orchestra/testbench": "^9.8",
+        "phpstan/phpstan": "^2.0",
+        "rector/rector": "^2.0",
+        "shipmonk/composer-dependency-analyser": "^1.8"
     },
     "config": {
         "optimize-autoloader": true,
