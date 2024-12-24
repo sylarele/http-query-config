@@ -164,7 +164,7 @@ abstract class QueryRequest extends FormRequest
             FilterType::Date,
             FilterType::DateTime => Carbon::parse(\is_string($value) ? $value : null)
                 ->timezone($timezone),
-            FilterType::Boolean => $value === 'true' || (bool) $value,
+            FilterType::Boolean => $value === 'true' || $value,
             FilterType::Array => (array) $value,
         };
     }
@@ -215,7 +215,7 @@ abstract class QueryRequest extends FormRequest
         $pagination = $this->config->getPagination();
 
         $paginationMode = $this->enum('pagination', PaginationMode::class)
-            ?? PaginationMode::Offset;
+            ?? PaginationMode::default();
         $limit = $this->integer('limit', $pagination->getDefaultLimit());
         $page = $this->integer('page', 1);
         $cursor = $this->has('cursor')

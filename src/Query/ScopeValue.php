@@ -20,11 +20,11 @@ readonly class ScopeValue
         protected Scope $scope,
     ) {
         $this->arguments = array_map(
-            callback: static fn (ScopeArgument $argument): ScopeArgumentValue => new ScopeArgumentValue(
+            static fn (ScopeArgument $argument): ScopeArgumentValue => new ScopeArgumentValue(
                 query: $query,
                 argument: $argument,
             ),
-            array: $scope->getArguments(),
+            $scope->getArguments(),
         );
     }
 
@@ -53,7 +53,7 @@ readonly class ScopeValue
     }
 
     /**
-     * @param  string  $name the name of the argument
+     * @param string $name the name of the argument
      * @return ScopeArgumentValue the argument
      *
      * @throws RuntimeException

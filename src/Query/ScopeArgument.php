@@ -134,8 +134,7 @@ class ScopeArgument
     }
 
     /**
-     * @return ValidationRules|null the custom validation
-     * rules for the query argument
+     * @return ValidationRules|null the custom validation rules for the query argument
      */
     public function getValidation(): ?array
     {
@@ -163,13 +162,13 @@ class ScopeArgument
         if (is_subclass_of($type->getName(), Model::class)) {
             // When the parameter is a model, we can resolve it from the database
             // This wraps the transformer into a new one that implicitly resolves the model instance
+            /** @var class-string<Model> $class */
             $class = $type->getName();
 
-            $this->transformer = static function (string $value, Query $query) use (
-                $class,
-                $baseTransformer,
-                $type
-            ) {
+            $this->transformer = static function (
+                string $value,
+                Query $query
+            ) use ($class, $baseTransformer, $type) {
                 // If the parameter is nullable, we pass null if the model was not found
                 $instance = $type->allowsNull()
                     ? $class::query()->find($value)

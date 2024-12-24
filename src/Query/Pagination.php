@@ -15,7 +15,7 @@ use Sylarele\HttpQueryConfig\Query\Pagination\OffsetPagination;
  */
 class Pagination
 {
-    /** @var PaginationMode[] the allowed pagination modes on the query */
+    /** @var array<int,PaginationMode> the allowed pagination modes on the query */
     protected array $allowed = [
         PaginationMode::Offset,
         PaginationMode::Cursor
@@ -104,7 +104,7 @@ class Pagination
     }
 
     /**
-     * @return PaginationMode[] the allowed pagination modes on the query
+     * @return array<int,PaginationMode> the allowed pagination modes on the query
      */
     public function getAllowed(): array
     {

@@ -63,10 +63,9 @@ class QueryConfig
      */
     public function filters(string ...$names): HigherOrderFilterProxy
     {
-        return new HigherOrderFilterProxy(array_map(
-            fn (string $name): Filter => $this->filter($name),
-            array_values($names),
-        ));
+        return new HigherOrderFilterProxy(
+            array_map($this->filter(...), array_values($names))
+        );
     }
 
     /**
@@ -101,10 +100,7 @@ class QueryConfig
     public function withMany(string ...$relations): HigherOrderRelationProxy
     {
         /** @var array<int,Relationship> $relationship */
-        $relationship = array_map(
-            fn (string $relation): Relationship => $this->with($relation),
-            $relations,
-        );
+        $relationship = array_map($this->with(...), $relations);
 
         return new HigherOrderRelationProxy($relationship);
     }
@@ -129,10 +125,7 @@ class QueryConfig
     public function sorts(string ...$names): HigherOrderSortProxy
     {
         /** @var array<int, Sort> $sorts */
-        $sorts = array_map(
-            fn (string $name): Sort => $this->sort($name),
-            $names,
-        );
+        $sorts = array_map($this->sort(...), $names);
 
         return new HigherOrderSortProxy($sorts);
     }
@@ -296,7 +289,7 @@ class QueryConfig
     public function getRelationship(Relationship|string $relationship): ?Relationship
     {
         if ($relationship instanceof Relationship) {
-            if (!\in_array($relationship, $this->relationships, strict: false)) {
+            if (!\in_array($relationship, $this->relationships)) {
                 return null;
             }
 
@@ -321,7 +314,7 @@ class QueryConfig
     public function getRelationshipOrFail(Relationship|string $relationship): Relationship
     {
         if ($relationship instanceof Relationship) {
-            if (!\in_array($relationship, $this->relationships, strict: false)) {
+            if (!\in_array($relationship, $this->relationships)) {
                 throw new RuntimeException(
                     \sprintf(
                         'Given relationship named `%s` is not registered on this query type.',

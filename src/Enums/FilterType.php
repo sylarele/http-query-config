@@ -31,8 +31,8 @@ enum FilterType
     {
         return match ($this) {
             self::String => ['string', 'max:256'],
-            self::Integer => ['integer', 'min:'.PHP_INT_MIN, 'max:'.PHP_INT_MAX],
-            self::Float => ['numeric', 'min:'.PHP_INT_MIN, 'max:'.PHP_INT_MAX],
+            self::Integer => ['integer'],
+            self::Float => ['numeric'],
             self::Date => [new DateFormats(['Y-m-d'])],
             self::DateTime => [new DateFormats(DateFormats::ISO_FORMATS)],
             self::Boolean => ['boolean'],
@@ -47,10 +47,10 @@ enum FilterType
     {
         return match ($this) {
             self::String => [FilterMode::Equals, FilterMode::Contains, FilterMode::In],
-            self::Integer => [...FilterMode::numericComparisonCases()],
-            self::Float => [...FilterMode::numericComparisonCases()],
-            self::Date => [...FilterMode::numericComparisonCases()],
-            self::DateTime => [...FilterMode::numericComparisonCases()],
+            self::Integer => FilterMode::numericComparisonCases(),
+            self::Float => FilterMode::numericComparisonCases(),
+            self::Date => FilterMode::numericComparisonCases(),
+            self::DateTime => FilterMode::numericComparisonCases(),
             self::Boolean => [FilterMode::Equals],
             self::Array => [FilterMode::In],
         };

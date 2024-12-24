@@ -31,7 +31,7 @@ readonly class RelationshipValue
     }
 
     /**
-     * @return string[] the scopes to apply to the relationship
+     * @return array<int,string> the scopes to apply to the relationship
      */
     public function getScopes(): array
     {

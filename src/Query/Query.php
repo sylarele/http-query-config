@@ -23,16 +23,16 @@ abstract class Query
     /** @var Model the model instance linked to this query */
     protected readonly Model $instance;
 
-    /** @var FilterValue[] the filters to apply to the query */
+    /** @var array<int,FilterValue> the filters to apply to the query */
     protected array $filters = [];
 
-    /** @var ScopeValue[] the scopes to apply to the query */
+    /** @var array<int,ScopeValue> the scopes to apply to the query */
     protected array $scopes = [];
 
-    /** @var RelationshipValue[] the relationships to load on the query */
+    /** @var array<int,RelationshipValue> the relationships to load on the query */
     protected array $relationships = [];
 
-    /** @var SortValue[] the sorts to apply to the query */
+    /** @var array<int,SortValue> the sorts to apply to the query */
     protected array $sorts = [];
 
     /** @var array<int,string> */
@@ -44,8 +44,6 @@ abstract class Query
     /** @var bool whether to dump the query and die */
     protected bool $dd = false;
 
-    /**
-     */
     final public function __construct()
     {
         $modelName = $this->model();
