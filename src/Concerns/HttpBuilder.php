@@ -123,7 +123,7 @@ trait HttpBuilder
                         ->getCasts()[$builder->getMorphType()] ?? null;
 
                     if (
-                        (!is_object($types) && !is_string($types))
+                        (!\is_object($types) && !\is_string($types))
                         || !is_subclass_of($types, BackedEnum::class)
                     ) {
                         throw new InvalidArgumentException(
