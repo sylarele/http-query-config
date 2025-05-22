@@ -13,9 +13,13 @@ use Sylarele\HttpQueryConfig\Query\QueryConfig;
 use Sylarele\HttpQueryConfig\Query\ScopeArgument;
 use Sylarele\HttpQueryConfig\Transformers\EnumListTransformer;
 use Sylarele\HttpQueryConfig\Transformers\EnumTransformer;
+use Workbench\App\Builders\FooBuilder;
 use Workbench\App\Enums\FooState;
 use Workbench\App\Models\Foo;
 
+/**
+ * @extends Query<Foo,FooBuilder>
+ */
 class FooQuery extends Query
 {
     /**
@@ -50,7 +54,7 @@ class FooQuery extends Query
             );
         $config
             ->filter('whereStates')
-            ->scope()
+            ->scopeClosure($this->instance::query()->whereState(...))
             ->arg(
                 'states',
                 static fn (ScopeArgument $arg): ScopeArgument => $arg

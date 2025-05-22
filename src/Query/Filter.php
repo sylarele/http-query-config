@@ -6,6 +6,7 @@ namespace Sylarele\HttpQueryConfig\Query;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use Override;
@@ -15,6 +16,11 @@ use Sylarele\HttpQueryConfig\Enums\FilterType;
 
 /**
  * Configures a simple query filter, for a single field.
+ *
+ * @template TModel of Model
+ * @template TBuilder of Builder
+ *
+ * @implements QueryFilter<TModel, TBuilder>
  */
 class Filter implements QueryFilter
 {
@@ -31,7 +37,7 @@ class Filter implements QueryFilter
     protected bool $dummy = false;
 
     /**
-     * @param  Model  $model  the model linked to the query
+     * @param  TModel  $model  the model linked to the query
      * @param  string  $name   the name of the filter on the query
      * @param  Closure  $mutate internal, used to transform the filter into a scope if scope() is called
      */
@@ -90,6 +96,25 @@ class Filter implements QueryFilter
             model: $this->model,
             name: $this->name,
             scopeName: $scopeName ?? $this->name,
+        );
+
+        $mutate($this, $scope);
+
+        return $scope;
+    }
+
+    /**
+     * @param Closure $callback
+     */
+    public function scopeClosure(Closure $callback): Scope
+    {
+        $mutate = $this->mutate;
+
+        $scope = new Scope(
+            model: $this->model,
+            name: $this->name,
+            scopeName: $this->name,
+            callback: $callback,
         );
 
         $mutate($this, $scope);

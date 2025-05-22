@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sylarele\HttpQueryConfig\Query;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use RuntimeException;
@@ -11,11 +12,15 @@ use Sylarele\HttpQueryConfig\Contracts\QueryFilter;
 use Sylarele\HttpQueryConfig\Enums\SortOrder;
 use Sylarele\HttpQueryConfig\Exceptions\QueryConfigLockedException;
 
+/**
+ * @template TModel of Model
+ * @template TBuilder of Builder
+ */
 class QueryConfig
 {
     protected bool $locked = false;
 
-    /** @var array<int,QueryFilter> the configured filters and scopes */
+    /** @var array<int,QueryFilter<TModel,TBuilder>> the configured filters and scopes */
     protected array $filters = [];
 
     /** @var array<int,Sort> the configured sorts */
@@ -33,6 +38,9 @@ class QueryConfig
     /** @var array<int,Relationship> the configured relationships */
     protected array $relationships = [];
 
+    /**
+     * @param TModel $model
+     */
     public function __construct(
         protected readonly Model $model,
     ) {
@@ -51,11 +59,14 @@ class QueryConfig
             throw new QueryConfigLockedException();
         }
 
-        return $this->filters[] = new Filter(
+        /** @var Filter<TModel,TBuilder> $filter */
+        $filter = new Filter(
             model: $this->model,
             name: $name,
             mutate: $this->replace(...),
         );
+
+        return $this->filters[] = $filter;
     }
 
     /**

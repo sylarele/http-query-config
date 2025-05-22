@@ -20,6 +20,7 @@ use Sylarele\HttpQueryConfig\Exceptions\ScopeParameterNotFoundException;
  * Similar to filters, but use a Builder scope instead of a database field.
  *
  * @phpstan-import-type ValidationRules from QueryFilter
+ * @template TModel of Model
  */
 class Scope implements QueryFilter
 {
@@ -27,14 +28,16 @@ class Scope implements QueryFilter
     protected array $arguments = [];
 
     /**
-     * @param Model $model the model linked to the query
+     * @param TModel $model the model linked to the query
      * @param string $name the name of the filter on the query
      * @param string $scopeName the name of the Builder scope to call
+     * @param ?Closure $callback
      */
     public function __construct(
         protected readonly Model $model,
         protected readonly string $name,
         protected readonly string $scopeName,
+        protected readonly ?Closure $callback = null,
     ) {
     }
 
