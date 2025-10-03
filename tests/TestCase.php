@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Sylarele\HttpQueryConfig;
 
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Foundation\Application;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Override;
 
@@ -15,7 +16,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     /**
      * Define environment setup.
      *
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param  Application  $app
      * @return void
      */
     #[Override]
