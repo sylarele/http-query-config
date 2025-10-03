@@ -104,7 +104,6 @@ class Filter implements QueryFilter
     }
 
     /**
-     * @param Closure $callback
      */
     public function scopeClosure(Closure $callback): Scope
     {
@@ -113,8 +112,7 @@ class Filter implements QueryFilter
         $scope = new Scope(
             model: $this->model,
             name: $this->name,
-            scopeName: $this->name,
-            callback: $callback,
+            scopeName: $callback,
         );
 
         $mutate($this, $scope);

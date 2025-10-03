@@ -30,7 +30,7 @@ abstract class Query
     /** @var array<int,FilterValue> the filters to apply to the query */
     protected array $filters = [];
 
-    /** @var array<int,ScopeValue> the scopes to apply to the query */
+    /** @var array<int,ScopeValue<TModel,TBuilder>> the scopes to apply to the query */
     protected array $scopes = [];
 
     /** @var array<int,RelationshipValue> the relationships to load on the query */
@@ -114,6 +114,7 @@ abstract class Query
      */
     public function scope(Scope|string $scope): ScopeValue
     {
+        /** @var ScopeValue<TModel,TBuilder> $result */
         $result = new ScopeValue(
             query: WeakReference::create($this),
             scope: $this->config->getScopeOrFail($scope),

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Queries;
 
+use Closure;
 use Illuminate\Validation\Rules\Enum;
 use InvalidArgumentException;
 use Override;
@@ -54,7 +55,7 @@ class FooQuery extends Query
             );
         $config
             ->filter('whereStates')
-            ->scopeClosure($this->instance::query()->whereState(...))
+            ->scopeClosure(fn (FooBuilder $instance): Closure => $instance->whereStates(...))
             ->arg(
                 'states',
                 static fn (ScopeArgument $arg): ScopeArgument => $arg

@@ -4,17 +4,26 @@ declare(strict_types=1);
 
 namespace Sylarele\HttpQueryConfig\Query;
 
+use Closure;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use RuntimeException;
 use WeakReference;
 
 /**
  * A scope value on a query.
+ *
+ * @template TModel of Model
+ * @template TBuilder of Builder
  */
 readonly class ScopeValue
 {
     /** @var array<int,ScopeArgumentValue> */
     protected array $arguments;
 
+    /**
+     * @param Scope<TModel, TBuilder> $scope
+     */
     public function __construct(
         protected WeakReference $query,
         protected Scope $scope,
@@ -37,9 +46,9 @@ readonly class ScopeValue
     }
 
     /**
-     * @return string the Builder name of the scope
+     * @return string|(Closure(TBuilder): (Closure(mixed...): TBuilder)) the Builder name of the scope
      */
-    public function getScopeName(): string
+    public function getScopeName(): string|Closure
     {
         return $this->scope->getScopeName();
     }

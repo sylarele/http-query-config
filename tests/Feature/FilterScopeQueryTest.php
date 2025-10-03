@@ -33,7 +33,7 @@ class FilterScopeQueryTest extends TestCase
     {
         $this->createFoos();
 
-        $this
+        $response = $this
             ->getJson(
                 route(
                     'foos.index',
@@ -47,9 +47,12 @@ class FilterScopeQueryTest extends TestCase
                     ]
                 )
             )
-            ->assertOk()
-            ->assertJsonCount(1, 'data')
-            ->assertJsonPath('data.0.name', 'Carol');
+            ->assertOk();
+
+        $response
+            ->assertJsonCount(2, 'data')
+            ->assertJsonPath('data.0.name', 'Carol')
+            ->assertJsonPath('data.1.name', 'John');
     }
 
     public function testShouldValidatedScope(): void
@@ -116,6 +119,7 @@ class FilterScopeQueryTest extends TestCase
                 ['name' => 'Eve', 'state' => FooState::Active],
                 ['name' => 'Oscar', 'state' => FooState::Active],
                 ['name' => 'Dave', 'state' => FooState::Active],
+                ['name' => 'John', 'state' => FooState::Pending],
             ]);
     }
 }
