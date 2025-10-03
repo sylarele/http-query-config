@@ -14,16 +14,16 @@
     },
     "require": {
         "php": "^8.3|^8.4",
-        "illuminate/collections": "^11.0|^12.0",
-        "illuminate/database": "^11.0|^12.0",
-        "illuminate/pagination": "^11.0|^12.0",
-        "illuminate/support": "^11.0|^12.0",
-        "illuminate/validation": "^11.0|^12.0"
+        "laravel/framework": "^11.0|^12.0",
+        "nesbot/carbon": "^3.9",
+        "symfony/var-dumper": "^7.2"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.75",
         "orchestra/testbench": "^9.14",
+        "orchestra/testbench-core": "^9.16",
         "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^12.1",
         "rector/rector": "^2.0",
         "shipmonk/composer-dependency-analyser": "^1.8"
     },
