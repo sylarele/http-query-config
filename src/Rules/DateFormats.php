@@ -6,6 +6,7 @@ namespace Sylarele\HttpQueryConfig\Rules;
 
 use Closure;
 use DateTime;
+use DateTimeInterface;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Translation\PotentiallyTranslatedString;
 use Override;
@@ -16,9 +17,9 @@ use Override;
 class DateFormats implements ValidationRule
 {
     final public const array ISO_FORMATS = [
-        DateTime::ATOM,
-        DateTime::RFC3339,
-        DateTime::RFC3339_EXTENDED,
+        DateTimeInterface::ATOM,
+        DateTimeInterface::RFC3339,
+        DateTimeInterface::RFC3339_EXTENDED,
     ];
 
     /**

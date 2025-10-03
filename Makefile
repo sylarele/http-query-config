@@ -71,9 +71,7 @@ fix:  ## Lance le formatage du code
 .PHONY: dependencies
 dependencies: ## Check if the dependency are compliant
 	$(call printSection,COMPOSER DEPENDENCY)
-	${BIN_DIR}/composer-dependency-analyser \
-		--ignore-shadow-deps \
-		--ignore-unused-deps
+	${BIN_DIR}/composer-dependency-analyser
 
 .PHONY: migrate-fresh
 migrate-fresh:  ## Lance le formatage du code

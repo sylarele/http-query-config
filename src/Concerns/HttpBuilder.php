@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder;
 use InvalidArgumentException;
-use Nette\NotImplementedException;
 use Sylarele\HttpQueryConfig\Contracts\QueryResult;
 use Sylarele\HttpQueryConfig\Enums\FilterMode;
 use Sylarele\HttpQueryConfig\Enums\FilterType;
+use Sylarele\HttpQueryConfig\Exceptions\NotImplementedException;
 use Sylarele\HttpQueryConfig\Query\FilterValue;
 use Sylarele\HttpQueryConfig\Query\Query;
 use Sylarele\HttpQueryConfig\Query\Relationship;
@@ -122,7 +122,10 @@ trait HttpBuilder
                         ->getModel()
                         ->getCasts()[$builder->getMorphType()] ?? null;
 
-                    if (!is_subclass_of($types, BackedEnum::class)) {
+                    if (
+                        (!\is_object($types) && !\is_string($types))
+                        || !is_subclass_of($types, BackedEnum::class)
+                    ) {
                         throw new InvalidArgumentException(
                             \sprintf(
                                 'The model %s does not have an enum cast for the morph type %s',
