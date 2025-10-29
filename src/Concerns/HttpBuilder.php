@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Concerns;
 
 use BackedEnum;
+use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder;
@@ -19,6 +21,9 @@ use Sylarele\HttpQueryConfig\Query\Relationship;
 use Sylarele\HttpQueryConfig\Query\RelationshipValue;
 use Sylarele\HttpQueryConfig\Query\ScopeValue;
 
+/**
+ * @template TModel of Model
+ */
 trait HttpBuilder
 {
     /**
@@ -84,10 +89,21 @@ trait HttpBuilder
 
     /**
      * Applies a scope filter to the query, injecting its dependencies.
+     * @param ScopeValue<TModel,self> $scope
      */
-    protected function applyScope(ScopeValue $scope): static
+    protected function applyScope(ScopeValue $scope): self
     {
         $methode = $scope->getScopeName();
+        if ($methode instanceof Closure) {
+            $applyScope = $methode($this)(...$scope->getArgumentsMap());
+
+            return $applyScope instanceof self
+                ? $applyScope
+                : throw new InvalidArgumentException(
+                    'The scope must return the builder instance.'
+                );
+        }
+
         if (method_exists($this, $methode)) {
             $this->$methode(...$scope->getArgumentsMap());
         }

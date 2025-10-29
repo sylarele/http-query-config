@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Queries;
 
+use Closure;
 use Illuminate\Validation\Rules\Enum;
 use InvalidArgumentException;
 use Override;
@@ -13,9 +14,13 @@ use Sylarele\HttpQueryConfig\Query\QueryConfig;
 use Sylarele\HttpQueryConfig\Query\ScopeArgument;
 use Sylarele\HttpQueryConfig\Transformers\EnumListTransformer;
 use Sylarele\HttpQueryConfig\Transformers\EnumTransformer;
+use Workbench\App\Builders\FooBuilder;
 use Workbench\App\Enums\FooState;
 use Workbench\App\Models\Foo;
 
+/**
+ * @extends Query<Foo,FooBuilder>
+ */
 class FooQuery extends Query
 {
     /**
@@ -37,7 +42,7 @@ class FooQuery extends Query
         // Scopes
         $config
             ->filter('whereState')
-            ->scope()
+            ->scopeClosure(static fn (FooBuilder $instance): Closure => $instance->whereState(...))
             ->arg(
                 'state',
                 static fn (ScopeArgument $arg): ScopeArgument => $arg
@@ -50,7 +55,7 @@ class FooQuery extends Query
             );
         $config
             ->filter('whereStates')
-            ->scope()
+            ->scope('whereStates')
             ->arg(
                 'states',
                 static fn (ScopeArgument $arg): ScopeArgument => $arg

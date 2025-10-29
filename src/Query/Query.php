@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sylarele\HttpQueryConfig\Query;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Sylarele\HttpQueryConfig\Contracts\QueryPagination;
 use Sylarele\HttpQueryConfig\Enums\FilterMode;
@@ -14,19 +15,22 @@ use WeakReference;
  * A query for a model.
  * Allows for easy filtering, sorting, and pagination.
  * Can be configured inside the configure() method.
+ *
+ * @template TModel of Model
+ * @template TBuilder of Builder
  */
 abstract class Query
 {
-    /** @var QueryConfig the config for this query */
+    /** @var QueryConfig<TModel,TBuilder> the config for this query */
     protected readonly QueryConfig $config;
 
-    /** @var Model the model instance linked to this query */
+    /** @var TModel the model instance linked to this query */
     protected readonly Model $instance;
 
     /** @var array<int,FilterValue> the filters to apply to the query */
     protected array $filters = [];
 
-    /** @var array<int,ScopeValue> the scopes to apply to the query */
+    /** @var array<int,ScopeValue<TModel,TBuilder>> the scopes to apply to the query */
     protected array $scopes = [];
 
     /** @var array<int,RelationshipValue> the relationships to load on the query */
@@ -53,10 +57,12 @@ abstract class Query
 
         $this->instance = $model;
 
-        $this->config = new QueryConfig(
+        /** @var QueryConfig<TModel,TBuilder> $config */
+        $config = new QueryConfig(
             model: $this->instance,
         );
 
+        $this->config = $config;
         $this->configure($this->config);
         $this->config->lock();
 
@@ -72,7 +78,7 @@ abstract class Query
     }
 
     /**
-     * @return Model the model instance linked to this query
+     * @return TModel the model instance linked to this query
      */
     public function getModelInstance(): Model
     {
@@ -108,6 +114,7 @@ abstract class Query
      */
     public function scope(Scope|string $scope): ScopeValue
     {
+        /** @var ScopeValue<TModel,TBuilder> $result */
         $result = new ScopeValue(
             query: WeakReference::create($this),
             scope: $this->config->getScopeOrFail($scope),
@@ -275,12 +282,13 @@ abstract class Query
     }
 
     /**
-     * @return string the model class linked to this query
+     * @return class-string<TModel> the model class linked to this query
      */
     abstract protected function model(): string;
 
     /**
      * Configures the query.
+     * @param QueryConfig<TModel, TBuilder> $config
      */
     abstract protected function configure(QueryConfig $config): void;
 }

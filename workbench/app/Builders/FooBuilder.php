@@ -10,11 +10,9 @@ use Workbench\App\Enums\FooState;
 use Workbench\App\Models\Foo;
 
 /**
- * @template TModelClass of Foo
- *
- * @extends Builder<TModelClass>
+ * @extends Builder<Foo>
  */
-class FooBuilder extends Builder
+final class FooBuilder extends Builder
 {
     use HttpBuilder;
 

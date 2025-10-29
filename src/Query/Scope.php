@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Query;
 
 use Closure;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Override;
@@ -20,6 +21,9 @@ use Sylarele\HttpQueryConfig\Exceptions\ScopeParameterNotFoundException;
  * Similar to filters, but use a Builder scope instead of a database field.
  *
  * @phpstan-import-type ValidationRules from QueryFilter
+ *
+ * @template TModel of Model
+ * @template TBuilder of Builder
  */
 class Scope implements QueryFilter
 {
@@ -27,14 +31,14 @@ class Scope implements QueryFilter
     protected array $arguments = [];
 
     /**
-     * @param Model $model the model linked to the query
+     * @param TModel $model the model linked to the query
      * @param string $name the name of the filter on the query
-     * @param string $scopeName the name of the Builder scope to call
+     * @param string|(Closure(TBuilder<TModel>): (Closure(mixed...): TBuilder<TModel>)) $scopeName the name of the Builder scope to call
      */
     public function __construct(
         protected readonly Model $model,
         protected readonly string $name,
-        protected readonly string $scopeName,
+        protected readonly string|Closure $scopeName,
     ) {
     }
 
@@ -68,9 +72,9 @@ class Scope implements QueryFilter
     }
 
     /**
-     * @return string the name of the scope on the model
+     * @return string|(Closure(TBuilder<TModel>): (Closure(mixed...): TBuilder<TModel>)) the name of the scope on the model
      */
-    public function getScopeName(): string
+    public function getScopeName(): string|Closure
     {
         return $this->scopeName;
     }
@@ -94,7 +98,13 @@ class Scope implements QueryFilter
             return;
         }
 
-        $reflection = new ReflectionMethod($this->model->newQuery(), $this->scopeName);
+        if ($this->scopeName instanceof  Closure) {
+            $closureName = $this->scopeName;
+            $closure = $closureName($this->model->newQuery());
+            $reflection = new ReflectionFunction($closure);
+        } else {
+            $reflection = new ReflectionMethod($this->model->newQuery(), $this->scopeName);
+        }
 
         foreach ($this->arguments as $argument) {
             $parameter = $this->getArgumentParameter($reflection, $argument);
@@ -111,7 +121,13 @@ class Scope implements QueryFilter
     {
         $result = [];
 
-        $reflection = new ReflectionMethod($this->model->newQuery(), $this->scopeName);
+        if ($this->scopeName instanceof  Closure) {
+            $closureName = $this->scopeName;
+            $closure = $closureName($this->model->newQuery());
+            $reflection = new ReflectionFunction($closure);
+        } else {
+            $reflection = new ReflectionMethod($this->model->newQuery(), $this->scopeName);
+        }
 
         foreach ($this->arguments as $argument) {
             $result[] = $argument->getValidation()
@@ -130,7 +146,7 @@ class Scope implements QueryFilter
      * @return ValidationRules
      */
     protected function guessArgumentValidation(
-        ReflectionMethod $reflection,
+        ReflectionMethod|ReflectionFunction $reflection,
         ScopeArgument $argument,
     ): array {
         $parameter = $this->getArgumentParameter($reflection, $argument);
@@ -155,7 +171,7 @@ class Scope implements QueryFilter
     }
 
     protected function getArgumentParameter(
-        ReflectionMethod $reflection,
+        ReflectionMethod|ReflectionFunction $reflection,
         ScopeArgument $argument,
     ): ReflectionParameter {
         $transformer = $argument->getTransformer();

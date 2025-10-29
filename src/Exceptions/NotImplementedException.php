@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sylarele\HttpQueryConfig\Exceptions;
 
-class NotImplementedException extends \LogicException
+use LogicException;
+
+class NotImplementedException extends LogicException
 {
     public function __construct(string $message = 'Not Implemented')
     {
