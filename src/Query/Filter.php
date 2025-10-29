@@ -104,6 +104,7 @@ class Filter implements QueryFilter
     }
 
     /**
+     * @param Closure $callback (Closure(TBuilder<TModel>)): (Closure(mixed...): TBuilder<TModel>)))
      */
     public function scopeClosure(Closure $callback): Scope
     {

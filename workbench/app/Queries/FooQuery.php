@@ -42,7 +42,7 @@ class FooQuery extends Query
         // Scopes
         $config
             ->filter('whereState')
-            ->scope()
+            ->scopeClosure(static fn (FooBuilder $instance): Closure => $instance->whereState(...))
             ->arg(
                 'state',
                 static fn (ScopeArgument $arg): ScopeArgument => $arg
@@ -55,7 +55,7 @@ class FooQuery extends Query
             );
         $config
             ->filter('whereStates')
-            ->scopeClosure(fn (FooBuilder $instance): Closure => $instance->whereStates(...))
+            ->scope('whereStates')
             ->arg(
                 'states',
                 static fn (ScopeArgument $arg): ScopeArgument => $arg

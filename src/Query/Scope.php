@@ -33,7 +33,7 @@ class Scope implements QueryFilter
     /**
      * @param TModel $model the model linked to the query
      * @param string $name the name of the filter on the query
-     * @param string|(Closure(TBuilder): (Closure(mixed...): TBuilder)) $scopeName the name of the Builder scope to call
+     * @param string|(Closure(TBuilder<TModel>): (Closure(mixed...): TBuilder<TModel>)) $scopeName the name of the Builder scope to call
      */
     public function __construct(
         protected readonly Model $model,
@@ -72,8 +72,7 @@ class Scope implements QueryFilter
     }
 
     /**
-     * @return string|(Closure(TBuilder): (Closure(mixed...): TBuilder)) the name of the scope on
-     * the model
+     * @return string|(Closure(TBuilder<TModel>): (Closure(mixed...): TBuilder<TModel>)) the name of the scope on the model
      */
     public function getScopeName(): string|Closure
     {
@@ -99,9 +98,13 @@ class Scope implements QueryFilter
             return;
         }
 
-        $reflection = $this->scopeName instanceof  Closure
-            ? new ReflectionFunction($this->scopeName)
-            : new ReflectionMethod($this->model->newQuery(), $this->scopeName);
+        if ($this->scopeName instanceof  Closure) {
+            $closureName = $this->scopeName;
+            $closure = $closureName($this->model->newQuery());
+            $reflection = new ReflectionFunction($closure);
+        } else {
+            $reflection = new ReflectionMethod($this->model->newQuery(), $this->scopeName);
+        }
 
         foreach ($this->arguments as $argument) {
             $parameter = $this->getArgumentParameter($reflection, $argument);
@@ -118,9 +121,13 @@ class Scope implements QueryFilter
     {
         $result = [];
 
-        $reflection = $this->scopeName instanceof  Closure
-            ? new ReflectionFunction($this->scopeName)
-            : new ReflectionMethod($this->model->newQuery(), $this->scopeName);
+        if ($this->scopeName instanceof  Closure) {
+            $closureName = $this->scopeName;
+            $closure = $closureName($this->model->newQuery());
+            $reflection = new ReflectionFunction($closure);
+        } else {
+            $reflection = new ReflectionMethod($this->model->newQuery(), $this->scopeName);
+        }
 
         foreach ($this->arguments as $argument) {
             $result[] = $argument->getValidation()

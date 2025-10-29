@@ -95,7 +95,13 @@ trait HttpBuilder
     {
         $methode = $scope->getScopeName();
         if ($methode instanceof Closure) {
-            return $methode($this)(...$scope->getArgumentsMap());
+            $applyScope = $methode($this)(...$scope->getArgumentsMap());
+
+            return $applyScope instanceof self
+                ? $applyScope
+                : throw new InvalidArgumentException(
+                    'The scope must return the builder instance.'
+                );
         }
 
         if (method_exists($this, $methode)) {
