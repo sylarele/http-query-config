@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Query\Pagination;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Override;
 use Sylarele\HttpQueryConfig\Collections\LengthAwarePaginator;
 use Sylarele\HttpQueryConfig\Contracts\QueryPagination;
@@ -45,8 +47,11 @@ readonly class OffsetPagination implements QueryPagination
             page: $this->page,
         );
 
+        /** @var \Illuminate\Support\Collection<int,Model> $items */
+        $items = $result->items();
+
         return new LengthAwarePaginator(
-            items: $result->items(),
+            items: new Collection($items),
             total: $result->total(),
             perPage: $result->perPage(),
             currentPage: $result->currentPage(),

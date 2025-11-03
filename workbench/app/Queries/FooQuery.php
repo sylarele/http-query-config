@@ -6,7 +6,6 @@ namespace Workbench\App\Queries;
 
 use Closure;
 use Illuminate\Validation\Rules\Enum;
-use InvalidArgumentException;
 use Override;
 use Sylarele\HttpQueryConfig\Enums\FilterType;
 use Sylarele\HttpQueryConfig\Query\Query;
@@ -62,6 +61,31 @@ class FooQuery extends Query
                     ->withValidation(['required_with:whereStates', 'array', 'min:1'])
                     ->addedValidation('*', ['required', 'string', new Enum(FooState::class)])
                     ->transform(new EnumListTransformer(FooState::class))
+            );
+        $config
+            ->filter('whereStateDefault')
+            ->scope()
+            ->arg(
+                'state',
+                static fn (ScopeArgument $argument): ScopeArgument => $argument
+                    ->withValidation([
+                        'nullable',
+                        'string',
+                        new Enum(FooState::class)
+                    ])
+            );
+        $config
+            ->filter('whereStateUsingDefault')
+            ->scope('whereStateDefault')
+            ->arg(
+                'state',
+                static fn (ScopeArgument $argument): ScopeArgument => $argument
+                    ->using(static fn (): FooState => FooState::Inactive)
+                    ->withValidation([
+                        'nullable',
+                        'string',
+                        new Enum(FooState::class)
+                    ])
             );
 
         // Sorts
