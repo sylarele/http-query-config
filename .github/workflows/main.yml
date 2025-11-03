@@ -11,7 +11,7 @@ jobs:
         php-version: [ '8.3' ]
     steps:
     - name: Pull repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Validate commit message
       run: ./.github/script/validate_commit.sh
     - name: Setup php
@@ -28,7 +28,7 @@ jobs:
         php-version: [ '8.3' ]
     steps:
     - name: Pull repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Setup php
       uses: ./.github/actions/setup-php-composer
     - name: Dependencies tests
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Pull repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Bump version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
