@@ -16,6 +16,40 @@ class FilterIntegerQueryTest extends TestCase
     use RefreshDatabase;
 
     /**
+     * @param array<int,array<string,string>> $arguments
+     */
+    #[DataProvider('getValidatedFilterProvider')]
+    public function testShouldValidatedFilter(array $arguments, string $except): void
+    {
+        $this->createFoos();
+
+        $response = $this
+            ->getJson(route('foos.index', $arguments));
+
+        $response
+            ->assertUnprocessable()
+            ->assertJsonPath('message', $except);
+    }
+
+    public static function getValidatedFilterProvider(): Generator
+    {
+        yield 'not array' => [
+            ['size'],
+            'The size field must be an array.',
+        ];
+
+        yield 'without mode' => [
+            ['size[mode]'],
+            'The selected size.mode is invalid.',
+        ];
+
+        yield 'without not' => [
+            ['size[not]'],
+            'The size.not field must be true or false.',
+        ];
+    }
+
+    /**
      * @param array<int, string> $expected
      */
     #[DataProvider('getFiltersProvider')]

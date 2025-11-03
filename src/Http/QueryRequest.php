@@ -59,7 +59,12 @@ abstract class QueryRequest extends FormRequest
         foreach ($filters as $filter) {
             $name = $filter->getName();
 
-            foreach ($filter->getValidation() as $key => $value) {
+            $validation = $filter->getValidation();
+            $rules[$name] = $validation === []
+                ? ['nullable']
+                : ['array'];
+
+            foreach ($validation as $key => $value) {
                 $rules[\sprintf('%s.%s', $name, $key)] = $value;
             }
         }
@@ -195,7 +200,7 @@ abstract class QueryRequest extends FormRequest
 
     protected function applyScopeToQuery(Scope $scope, Query $instance): void
     {
-        if (!$this->has($scope->getName())) {
+        if (!$this->filled($scope->getName())) {
             return;
         }
 

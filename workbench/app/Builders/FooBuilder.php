@@ -16,6 +16,20 @@ final class FooBuilder extends Builder
 {
     use HttpBuilder;
 
+    public function whereName(string $value): self
+    {
+        return $this
+            ->when(
+                $value,
+                static fn ($query) => $query->where('name', '=', $value)
+            );
+    }
+
+    public function whereStateDefault(FooState $state = FooState::Active): self
+    {
+        return $this->where('state', '=', $state);
+    }
+
     public function whereState(FooState $state): self
     {
         return $this->where('state', '=', $state);

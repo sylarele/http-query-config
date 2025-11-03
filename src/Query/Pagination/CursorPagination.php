@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Query\Pagination;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Override;
 use Sylarele\HttpQueryConfig\Collections\CursorPaginator;
 use Sylarele\HttpQueryConfig\Contracts\QueryPagination;
@@ -45,10 +47,13 @@ class CursorPagination implements QueryPagination
             cursor: $this->cursor,
         );
 
+        /** @var \Illuminate\Support\Collection<int,Model> $items */
+        $items = $result->items();
+
         return new CursorPaginator(
-            items: $result->items(),
+            items: new Collection($items),
             perPage: $result->perPage(),
-            cursor: $result->cursor()
+            cursor: $result->cursor(),
         );
     }
 }

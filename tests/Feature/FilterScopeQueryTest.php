@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Sylarele\HttpQueryConfig\Feature;
 
+use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Sylarele\HttpQueryConfig\TestCase;
 use Workbench\App\Enums\FooState;
 use Workbench\Database\Factories\FooFactory;
@@ -27,6 +29,47 @@ class FilterScopeQueryTest extends TestCase
             ->assertOk()
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.name', 'Carol');
+    }
+
+    public function testShouldWithScopeUsingDefault(): void
+    {
+        $this->createFoos();
+
+        $response = $this
+            ->getJson(
+                route('foos.index', ['whereStateUsingDefault[state]'])
+            );
+
+        $response
+            ->assertOk()
+            ->assertJsonCount(1, 'data');
+    }
+
+    /**
+     * @param array<int,array<string,string>> $arguments
+     */
+    #[DataProvider('getScopeByDefaultProvider')]
+    public function testShouldFilterWithScopeByDefault(array $arguments): void
+    {
+        $this->createFoos();
+
+        $response = $this
+            ->getJson(route('foos.index', $arguments));
+
+        $response
+            ->assertOk()
+            ->assertJsonCount(4, 'data');
+    }
+
+    public static function getScopeByDefaultProvider(): Generator
+    {
+        yield 'without value' => [
+            ['whereStateDefault[state]']
+        ];
+
+        yield 'with value void' => [
+            ['whereStateDefault[state]' => '']
+        ];
     }
 
     public function testShouldFilterWithScopeAndMultipleValue(): void
@@ -55,59 +98,51 @@ class FilterScopeQueryTest extends TestCase
             ->assertJsonPath('data.1.name', 'John');
     }
 
-    public function testShouldValidatedScope(): void
+    /**
+     * @param array<int,array<string,string>> $arguments
+     */
+    #[DataProvider('getValidatedScopeProvider')]
+    public function testShouldValidatedScope(array $arguments, string $except): void
     {
-        $this
-            ->getJson(
-                route(
-                    'foos.index',
-                    ['whereState[state]']
-                )
-            )
-            ->assertUnprocessable()
-            ->assertJsonPath(
-                'message',
-                'The where state.state field is required when where state is present.'
-            );
+        $response = $this
+            ->getJson(route('foos.index', $arguments));
 
-        $this
-            ->getJson(
-                route(
-                    'foos.index',
-                    ['whereState[bad_key]' => FooState::Inactive->value]
-                )
-            )
+        $response
             ->assertUnprocessable()
-            ->assertJsonPath(
-                'message',
-                'The where state.state field is required when where state is present.'
-            );
+            ->assertJsonPath('message', $except);
+    }
 
-        $this
-            ->getJson(
-                route(
-                    'foos.index',
-                    ['whereStates[states][]' => 'error']
-                )
-            )
-            ->assertUnprocessable()
-            ->assertJsonPath(
-                'message',
-                'The selected whereStates.states.0 is invalid.'
-            );
+    public static function getValidatedScopeProvider(): Generator
+    {
+        yield 'not array' => [
+            ['whereState'],
+            'The where state field must be an array.',
+        ];
 
-        $this
-            ->getJson(
-                route(
-                    'foos.index',
-                    ['whereStates[bad_key][]' => FooState::Inactive->value]
-                )
-            )
-            ->assertJsonPath(
-                'message',
-                'The where states.states field is required when where states is present.'
-            )
-        ;
+        yield 'without key' => [
+            ['whereState[]'],
+            'The where state.state field is required when where state is present.',
+        ];
+
+        yield 'without value' => [
+            ['whereState[state]'],
+            'The where state.state field is required when where state is present.',
+        ];
+
+        yield 'with bad key' => [
+            ['whereState[bad_key]' => FooState::Inactive->value],
+            'The where state.state field is required when where state is present.',
+        ];
+
+        yield 'with bad type and bad value' => [
+            ['whereStates[states][]' => 'error'],
+            'The selected whereStates.states.0 is invalid.',
+        ];
+
+        yield 'with bad key and bad type' => [
+            ['whereStates[bad_key][]' => FooState::Inactive->value],
+            'The where states.states field is required when where states is present.',
+        ];
     }
 
     private function createFoos(): void
