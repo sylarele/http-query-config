@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Query;
 
 use Closure;
-use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionNamedType;
 use ReflectionParameter;
-use Stringable;
 use Sylarele\HttpQueryConfig\Contracts\QueryFilter;
 use Sylarele\HttpQueryConfig\Contracts\Transformer;
 
 /**
  * A query scope argument config.
  *
+ * @phpstan-import-type ValidationRule from QueryFilter
  * @phpstan-import-type ValidationRules from QueryFilter
  */
 class ScopeArgument
@@ -80,7 +79,7 @@ class ScopeArgument
     /**
      * Set custom validation rule for this argument.
      *
-     * @param array<int, string|Stringable|Rule> $rules
+     * @param ValidationRule $rules
      */
     public function withValidation(array $rules): static
     {
@@ -92,7 +91,7 @@ class ScopeArgument
     /**
      * Sets custom validation rules for this argument.
      *
-     * @param array<int, string|Stringable|Rule> $rules
+     * @param ValidationRule $rules
      */
     public function addedValidation(string $subKey, array $rules): static
     {
