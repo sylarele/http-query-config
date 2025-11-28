@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Contracts;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule as IlluminateValidationRule;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Stringable;
@@ -12,7 +13,7 @@ use Stringable;
 /**
  * Interface for both filters and scopes.
  *
- * @phpstan-type ValidationRule array<int, string|Stringable|Rule>
+ * @phpstan-type ValidationRule array<int, string|Stringable|Rule|IlluminateValidationRule>
  * @phpstan-type ValidationRules array<string, ValidationRule>
  *
  * @template TModel of Model
