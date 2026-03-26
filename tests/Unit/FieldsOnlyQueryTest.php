@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylarele\HttpQueryConfig\Unit;
+namespace Sylarele\HttpQueryConfig\Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Override;
-use Tests\Sylarele\HttpQueryConfig\TestCase;
+use Sylarele\HttpQueryConfig\Tests\TestCase;
 use Workbench\App\Models\Foo;
 use Workbench\App\Queries\FooQuery;
 use Workbench\Database\Factories\FooFactory;
 
-class FieldsOnlyQueryTest extends TestCase
+final class FieldsOnlyQueryTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -35,7 +35,7 @@ class FieldsOnlyQueryTest extends TestCase
         self::assertCount(5, $foos);
         $foo = $foos[0];
         self::assertInstanceOf(Foo::class, $foo);
-        self::assertEquals('Carol', $foo->name);
+        self::assertSame('Carol', $foo->name);
         self::assertArrayNotHasKey('size', $foo);
     }
 

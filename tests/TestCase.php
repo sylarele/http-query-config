@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylarele\HttpQueryConfig;
+namespace Sylarele\HttpQueryConfig\Tests;
 
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Foundation\Application;
 use Orchestra\Testbench\Concerns\WithWorkbench;
+use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Override;
 
-class TestCase extends \Orchestra\Testbench\TestCase
+class TestCase extends OrchestraTestCase
 {
     use WithWorkbench;
 

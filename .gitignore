@@ -1,4 +1,7 @@
+# Directories
 /storage/
 /vendor/
+
+# Files
 .idea
-.phpunit.result.cache
+composer.lock

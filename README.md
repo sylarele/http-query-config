@@ -1,18 +1,17 @@
 # HttpQueryConfig
 
-## Introduction
+[![License](https://img.shields.io/github/license/sylarele/http-query-config.svg)](https://github.com/sylarele/http-query-config/blob/main/LICENSE "LICENSE")
+![Packagist Dependency Version](https://img.shields.io/packagist/dependency-v/sylarele/http-query-config/php)
+[![Packagist Downloads](https://img.shields.io/packagist/dm/sylarele/http-query-config)](https://packagist.org/packages/sylarele/http-query-config "Packagist")
 
 Les Queries sont des classes définies dans le Domain (dossier Queries).
 Il doit y avoir une Query par Model queryable. Les Queries sont utilisées pour simplifier la configuration de filtres, scopes, relations, etc, … et pour simplifier la pagination des résultats.
 
-## Requirements
+## Installation
 
-### PHP version
-
-| Version PHP | HttpQueryConfig 0.x |
-|-------------|---------------------|
-| <= 8.2      | ✗ Unsupported       |
-| 8.3         | ✓ Supported         |
+```bash
+composer require sylarele/http-query-config
+```
 
 ## Exemple simple
 

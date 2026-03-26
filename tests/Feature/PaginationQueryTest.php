@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylarele\HttpQueryConfig\Feature;
+namespace Sylarele\HttpQueryConfig\Tests\Feature;
 
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Tests\Sylarele\HttpQueryConfig\TestCase;
+use Sylarele\HttpQueryConfig\Tests\TestCase;
 use Workbench\Database\Factories\FooFactory;
 
-class PaginationQueryTest extends TestCase
+final class PaginationQueryTest extends TestCase
 {
     use RefreshDatabase;
 

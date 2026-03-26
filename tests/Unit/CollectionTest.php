@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylarele\HttpQueryConfig\Unit;
+namespace Sylarele\HttpQueryConfig\Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Override;
@@ -13,12 +13,12 @@ use Sylarele\HttpQueryConfig\Contracts\QueryResult;
 use Sylarele\HttpQueryConfig\Query\Pagination\CursorPagination;
 use Sylarele\HttpQueryConfig\Query\Pagination\NoPagination;
 use Sylarele\HttpQueryConfig\Query\Pagination\OffsetPagination;
-use Tests\Sylarele\HttpQueryConfig\TestCase;
+use Sylarele\HttpQueryConfig\Tests\TestCase;
 use Workbench\App\Models\Foo;
 use Workbench\App\Queries\FooQuery;
 use Workbench\Database\Factories\FooFactory;
 
-class CollectionTest extends TestCase
+final class CollectionTest extends TestCase
 {
     use RefreshDatabase;
 

@@ -22,6 +22,9 @@ use Workbench\App\Builders\BarBuilder;
  */
 class Bar extends Model
 {
+    /**
+     * @return BelongsTo<Foo, $this>
+     */
     public function foo(): BelongsTo
     {
         return $this->belongsTo(Foo::class);

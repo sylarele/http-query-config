@@ -9,11 +9,10 @@ use Sylarele\HttpQueryConfig\Concerns\HttpBuilder;
 use Workbench\App\Models\Bar;
 
 /**
- * @template TModelClass of Bar
- *
- * @extends Builder<TModelClass>
+ * @extends Builder<Bar>
  */
 class BarBuilder extends Builder
 {
+    /** @use HttpBuilder<Bar> */
     use HttpBuilder;
 }

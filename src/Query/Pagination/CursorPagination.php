@@ -47,7 +47,7 @@ class CursorPagination implements QueryPagination
             cursor: $this->cursor,
         );
 
-        /** @var \Illuminate\Support\Collection<int,Model> $items */
+        /** @var array<int,Model> $items */
         $items = $result->items();
 
         return new CursorPaginator(

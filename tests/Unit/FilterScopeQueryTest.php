@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylarele\HttpQueryConfig\Unit;
+namespace Sylarele\HttpQueryConfig\Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Override;
-use Tests\Sylarele\HttpQueryConfig\TestCase;
+use Sylarele\HttpQueryConfig\Tests\TestCase;
 use Workbench\App\Enums\FooState;
 use Workbench\App\Models\Foo;
 use Workbench\App\Queries\FooQuery;
 use Workbench\Database\Factories\FooFactory;
 
-class FilterScopeQueryTest extends TestCase
+final class FilterScopeQueryTest extends TestCase
 {
     use RefreshDatabase;
 

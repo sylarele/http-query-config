@@ -25,14 +25,23 @@ use Workbench\App\Enums\FooState;
  */
 class Foo extends Model
 {
-    /** @var array<string, string> */
-    protected $casts = [
-        'state' => FooState::class,
-    ];
-
+    /**
+     * @return HasMany<Bar, $this>
+     */
     public function bars(): HasMany
     {
         return $this->hasMany(Bar::class);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    #[Override]
+    protected function casts(): array
+    {
+        return [
+            'state' => FooState::class,
+        ];
     }
 
     /**

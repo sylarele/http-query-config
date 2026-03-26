@@ -1,17 +1,22 @@
+includes:
+    - phar://vendor/phpstan/phpstan/phpstan.phar/conf/bleedingEdge.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+
 parameters:
+    ignoreErrors:
+        -
+            identifier: missingType.generics
     level: max
-    treatPhpDocTypesAsCertain: false
 
     parallel:
-       maximumNumberOfProcesses: 4
-
-    tmpDir: storage/tmp/phpstan
+       maximumNumberOfProcesses: 6
 
     paths:
         - src
         - tests
         - workbench
 
-    ignoreErrors:
-        -
-            identifier: missingType.generics
+    tmpDir: storage/tmp/phpstan
+
+    treatPhpDocTypesAsCertain: false

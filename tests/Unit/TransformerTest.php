@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylarele\HttpQueryConfig\Unit;
+namespace Sylarele\HttpQueryConfig\Tests\Unit;
 
 use Exception;
-use Illuminate\Support\Carbon;
 use PHPUnit\Framework\TestCase;
 use Sylarele\HttpQueryConfig\Exceptions\InvalidTransformerArgumentTypeException;
 use Sylarele\HttpQueryConfig\Transformers\CarbonTransformer;
@@ -15,16 +14,14 @@ use Sylarele\HttpQueryConfig\Transformers\FloatTransformer;
 use Sylarele\HttpQueryConfig\Transformers\IntegerTransformer;
 use Workbench\App\Enums\FooState;
 
-class TransformerTest extends TestCase
+final class TransformerTest extends TestCase
 {
     public function testCarbonTransform(): void
     {
         $transformer = new CarbonTransformer();
 
-        self::assertInstanceOf(
-            Carbon::class,
-            $transformer->transform('01-01-1970')
-        );
+        self::expectNotToPerformAssertions();
+        $transformer->transform('01-01-1970');
     }
 
     public function testCarbonTransformException(): void

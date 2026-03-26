@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylarele\HttpQueryConfig\Feature;
+namespace Sylarele\HttpQueryConfig\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Sylarele\HttpQueryConfig\TestCase;
+use Sylarele\HttpQueryConfig\Tests\TestCase;
 use Workbench\Database\Factories\FooFactory;
 
-class FieldsOnlyQueryTest extends TestCase
+final class FieldsOnlyQueryTest extends TestCase
 {
     use RefreshDatabase;
 
