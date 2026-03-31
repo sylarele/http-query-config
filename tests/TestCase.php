@@ -9,7 +9,12 @@ use Illuminate\Foundation\Application;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Override;
+use PHPUnit\Framework\Attributes\CoversNothing;
 
+/**
+ * @internal
+ */
+#[CoversNothing]
 class TestCase extends OrchestraTestCase
 {
     use WithWorkbench;
@@ -18,7 +23,6 @@ class TestCase extends OrchestraTestCase
      * Define environment setup.
      *
      * @param  Application  $app
-     * @return void
      */
     #[Override]
     protected function defineEnvironment($app)
@@ -26,12 +30,12 @@ class TestCase extends OrchestraTestCase
         /** @var Repository $config */
         $config = $app['config'];
         // Setup default database to use sqlite :memory:
-        tap($config, function (Repository $config): void {
+        tap($config, static function (Repository $config): void {
             $config->set('database.default', 'testbench');
             $config->set('database.connections.testbench', [
-                'driver'   => 'sqlite',
+                'driver' => 'sqlite',
                 'database' => ':memory:',
-                'prefix'   => '',
+                'prefix' => '',
             ]);
         });
     }

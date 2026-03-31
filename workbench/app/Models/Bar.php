@@ -11,7 +11,7 @@ use Override;
 use Workbench\App\Builders\BarBuilder;
 
 /**
- * - Attributes
+ * - Attributes.
  * @property int $id
  * @property string $name
  * @property int $foo_id

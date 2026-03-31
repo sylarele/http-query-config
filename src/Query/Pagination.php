@@ -18,7 +18,7 @@ class Pagination
     /** @var array<int,PaginationMode> the allowed pagination modes on the query */
     protected array $allowed = [
         PaginationMode::Offset,
-        PaginationMode::Cursor
+        PaginationMode::Cursor,
     ];
 
     /** @var PaginationMode the default pagination mode on the query, if none specified */
@@ -55,7 +55,7 @@ class Pagination
      */
     public function allowNone(): static
     {
-        if (!\in_array(PaginationMode::None, $this->allowed, true)) {
+        if (! \in_array(PaginationMode::None, $this->allowed, true)) {
             $this->allowed[] = PaginationMode::None;
         }
 

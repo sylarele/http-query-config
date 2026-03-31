@@ -6,10 +6,20 @@ namespace Sylarele\HttpQueryConfig\Tests\Feature;
 
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Sylarele\HttpQueryConfig\Concerns\HttpBuilder;
+use Sylarele\HttpQueryConfig\Http\QueryRequest;
+use Sylarele\HttpQueryConfig\Query\Query;
 use Sylarele\HttpQueryConfig\Tests\TestCase;
 use Workbench\Database\Factories\FooFactory;
 
+/**
+ * @internal
+ */
+#[CoversClass(HttpBuilder::class)]
+#[CoversClass(Query::class)]
+#[CoversClass(QueryRequest::class)]
 final class PaginationQueryTest extends TestCase
 {
     use RefreshDatabase;
@@ -35,9 +45,9 @@ final class PaginationQueryTest extends TestCase
             ->assertJsonPath(
                 'errors',
                 [
-                    "pagination" => ["The selected pagination is invalid."],
-                    "limit" => ["The limit field must be an integer."],
-                    "page" => ["The page field must be an integer."]
+                    'pagination' => ['The selected pagination is invalid.'],
+                    'limit' => ['The limit field must be an integer.'],
+                    'page' => ['The page field must be an integer.'],
                 ]
             );
     }
@@ -77,7 +87,7 @@ final class PaginationQueryTest extends TestCase
             1,
             50,
             30,
-            30
+            30,
         ];
 
         yield 'with limit of 5' => [
@@ -86,7 +96,7 @@ final class PaginationQueryTest extends TestCase
             6,
             5,
             5,
-            30
+            30,
         ];
     }
 }

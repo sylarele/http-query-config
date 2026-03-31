@@ -10,7 +10,7 @@ namespace Sylarele\HttpQueryConfig\Contracts;
 interface Transformer
 {
     /**
-     * @param TransformableData|array<array-key, TransformableData|array<array-key, TransformableData>> $value
+     * @param array<array-key, array<array-key, TransformableData>|TransformableData>|TransformableData $value
      */
     public function transform(array|string $value): mixed;
 }

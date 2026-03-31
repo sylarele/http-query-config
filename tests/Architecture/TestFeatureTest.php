@@ -5,11 +5,16 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Tests\Architecture;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use StructuraPhp\Structura\Attributes\TestDox;
 use StructuraPhp\Structura\Expr;
 use StructuraPhp\Structura\Testing\TestBuilder;
 use Sylarele\HttpQueryConfig\Tests\TestCase;
 
+/**
+ * @internal
+ */
+#[CoversNothing]
 final class TestFeatureTest extends TestBuilder
 {
     #[TestDox('Feature Testing architecture rules')]

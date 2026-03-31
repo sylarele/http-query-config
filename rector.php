@@ -3,9 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
-use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
 use Rector\Config\RectorConfig;
-use Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitSelfCallRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\NoSetupWithParentCallOverrideRector;
@@ -15,9 +13,9 @@ use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([
-        __DIR__ . '/src',
-        __DIR__ . '/tests',
-        __DIR__ . '/workbench',
+        __DIR__.'/src',
+        __DIR__.'/tests',
+        __DIR__.'/workbench',
     ]);
 
     $rectorConfig->phpVersion(PhpVersion::PHP_83);

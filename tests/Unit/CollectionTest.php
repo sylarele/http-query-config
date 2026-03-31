@@ -6,6 +6,7 @@ namespace Sylarele\HttpQueryConfig\Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Override;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Sylarele\HttpQueryConfig\Collections\CursorPaginator;
 use Sylarele\HttpQueryConfig\Collections\EloquentCollection;
 use Sylarele\HttpQueryConfig\Collections\LengthAwarePaginator;
@@ -18,6 +19,12 @@ use Workbench\App\Models\Foo;
 use Workbench\App\Queries\FooQuery;
 use Workbench\Database\Factories\FooFactory;
 
+/**
+ * @internal
+ */
+#[CoversClass(LengthAwarePaginator::class)]
+#[CoversClass(OffsetPagination::class)]
+#[CoversClass(EloquentCollection::class)]
 final class CollectionTest extends TestCase
 {
     use RefreshDatabase;

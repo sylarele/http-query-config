@@ -5,10 +5,20 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Sylarele\HttpQueryConfig\Concerns\HttpBuilder;
+use Sylarele\HttpQueryConfig\Http\QueryRequest;
+use Sylarele\HttpQueryConfig\Query\Query;
 use Sylarele\HttpQueryConfig\Tests\TestCase;
 use Workbench\Database\Factories\BarFactory;
 use Workbench\Database\Factories\FooFactory;
 
+/**
+ * @internal
+ */
+#[CoversClass(HttpBuilder::class)]
+#[CoversClass(Query::class)]
+#[CoversClass(QueryRequest::class)]
 final class WithQueryTest extends TestCase
 {
     use RefreshDatabase;
@@ -49,7 +59,7 @@ final class WithQueryTest extends TestCase
             )
             ->assertJsonPath(
                 'errors',
-                ["with.0" => ["The selected with.0 is invalid."]]
+                ['with.0' => ['The selected with.0 is invalid.']]
             );
     }
 

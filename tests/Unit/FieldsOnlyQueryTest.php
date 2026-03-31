@@ -6,11 +6,21 @@ namespace Sylarele\HttpQueryConfig\Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Override;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Sylarele\HttpQueryConfig\Concerns\HttpBuilder;
+use Sylarele\HttpQueryConfig\Http\QueryRequest;
+use Sylarele\HttpQueryConfig\Query\Query;
 use Sylarele\HttpQueryConfig\Tests\TestCase;
 use Workbench\App\Models\Foo;
 use Workbench\App\Queries\FooQuery;
 use Workbench\Database\Factories\FooFactory;
 
+/**
+ * @internal
+ */
+#[CoversClass(HttpBuilder::class)]
+#[CoversClass(Query::class)]
+#[CoversClass(QueryRequest::class)]
 final class FieldsOnlyQueryTest extends TestCase
 {
     use RefreshDatabase;

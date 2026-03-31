@@ -24,7 +24,7 @@ final class TestException extends TestBuilder
                     ->toBeClasses()
                     ->toHaveSuffix('Exception')
                     ->or(
-                        fn (Expr $expr): Expr => $expr
+                        static fn (Expr $expr): Expr => $expr
                             ->toExtend(LogicException::class)
                             ->toExtend(InvalidArgumentException::class)
                     )

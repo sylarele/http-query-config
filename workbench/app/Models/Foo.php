@@ -13,7 +13,7 @@ use Workbench\App\Builders\FooBuilder;
 use Workbench\App\Enums\FooState;
 
 /**
- * - Attributes
+ * - Attributes.
  * @property int $id
  * @property string $name
  * @property int $size
@@ -34,6 +34,15 @@ class Foo extends Model
     }
 
     /**
+     * @param QueryBuilder $query
+     */
+    #[Override]
+    public function newEloquentBuilder($query): FooBuilder
+    {
+        return new FooBuilder($query);
+    }
+
+    /**
      * @return array<string, string>
      */
     #[Override]
@@ -42,14 +51,5 @@ class Foo extends Model
         return [
             'state' => FooState::class,
         ];
-    }
-
-    /**
-     * @param QueryBuilder $query
-     */
-    #[Override]
-    public function newEloquentBuilder($query): FooBuilder
-    {
-        return new FooBuilder($query);
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Tests\Unit;
 
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sylarele\HttpQueryConfig\Exceptions\InvalidTransformerArgumentTypeException;
 use Sylarele\HttpQueryConfig\Transformers\CarbonTransformer;
@@ -14,6 +15,14 @@ use Sylarele\HttpQueryConfig\Transformers\FloatTransformer;
 use Sylarele\HttpQueryConfig\Transformers\IntegerTransformer;
 use Workbench\App\Enums\FooState;
 
+/**
+ * @internal
+ */
+#[CoversClass(CarbonTransformer::class)]
+#[CoversClass(EnumListTransformer::class)]
+#[CoversClass(EnumTransformer::class)]
+#[CoversClass(FloatTransformer::class)]
+#[CoversClass(IntegerTransformer::class)]
 final class TransformerTest extends TestCase
 {
     public function testCarbonTransform(): void

@@ -6,11 +6,21 @@ namespace Sylarele\HttpQueryConfig\Tests\Feature;
 
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Sylarele\HttpQueryConfig\Concerns\HttpBuilder;
+use Sylarele\HttpQueryConfig\Http\QueryRequest;
+use Sylarele\HttpQueryConfig\Query\Query;
 use Sylarele\HttpQueryConfig\Tests\TestCase;
 use Workbench\App\Enums\FooState;
 use Workbench\Database\Factories\FooFactory;
 
+/**
+ * @internal
+ */
+#[CoversClass(HttpBuilder::class)]
+#[CoversClass(Query::class)]
+#[CoversClass(QueryRequest::class)]
 final class FilterScopeQueryTest extends TestCase
 {
     use RefreshDatabase;
@@ -64,11 +74,11 @@ final class FilterScopeQueryTest extends TestCase
     public static function getScopeByDefaultProvider(): Generator
     {
         yield 'without value' => [
-            ['whereStateDefault[state]']
+            ['whereStateDefault[state]'],
         ];
 
         yield 'with value void' => [
-            ['whereStateDefault[state]' => '']
+            ['whereStateDefault[state]' => ''],
         ];
     }
 
@@ -86,7 +96,7 @@ final class FilterScopeQueryTest extends TestCase
                                 FooState::Inactive->value,
                                 FooState::Pending->value,
                             ],
-                        ]
+                        ],
                     ]
                 )
             )

@@ -16,7 +16,6 @@ use IteratorAggregate;
  * @mixin Collection<int,TModel>
  *
  * @extends IteratorAggregate<int,TModel>
- *
  */
 interface QueryResult extends IteratorAggregate
 {

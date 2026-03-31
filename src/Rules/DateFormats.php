@@ -26,7 +26,7 @@ final class DateFormats implements ValidationRule
      * @param  array<int,string>  $dateFormats
      */
     public function __construct(
-        protected array $dateFormats,
+        private array $dateFormats,
     ) {
     }
 

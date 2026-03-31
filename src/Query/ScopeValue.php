@@ -46,9 +46,9 @@ readonly class ScopeValue
     }
 
     /**
-     * @return string|(Closure(TBuilder<TModel>): (Closure(mixed...): TBuilder<TModel>)) the Builder name of the scope
+     * @return (Closure(TBuilder<TModel>): (Closure(mixed...): TBuilder<TModel>))|string the Builder name of the scope
      */
-    public function getScopeName(): string|Closure
+    public function getScopeName(): Closure|string
     {
         return $this->scope->getScopeName();
     }

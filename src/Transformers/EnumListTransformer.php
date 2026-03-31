@@ -9,7 +9,6 @@ use InvalidArgumentException;
 use Override;
 use Sylarele\HttpQueryConfig\Contracts\Transformer;
 use Sylarele\HttpQueryConfig\Exceptions\InvalidTransformerArgumentTypeException;
-use UnitEnum;
 use ValueError;
 
 class EnumListTransformer implements Transformer
@@ -19,7 +18,7 @@ class EnumListTransformer implements Transformer
      */
     public function __construct(private string $enumClass)
     {
-        if (!enum_exists($enumClass)) {
+        if (! enum_exists($enumClass)) {
             throw new InvalidArgumentException(
                 \sprintf("enum class '%s' does not exist", $enumClass)
             );
@@ -36,7 +35,7 @@ class EnumListTransformer implements Transformer
             throw new InvalidTransformerArgumentTypeException();
         }
 
-        if (!method_exists($this->enumClass, 'from')) {
+        if (! method_exists($this->enumClass, 'from')) {
             throw new InvalidTransformerArgumentTypeException(
                 \sprintf("enum class '%s' does not have method from()", $this->enumClass)
             );

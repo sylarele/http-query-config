@@ -48,7 +48,7 @@ class FooQuery extends Query
                     ->withValidation([
                         'required_with:whereState',
                         'string',
-                        new Enum(FooState::class)
+                        new Enum(FooState::class),
                     ])
                     ->transform(new EnumTransformer(FooState::class))
             );
@@ -71,7 +71,7 @@ class FooQuery extends Query
                     ->withValidation([
                         'nullable',
                         'string',
-                        new Enum(FooState::class)
+                        new Enum(FooState::class),
                     ])
             );
         $config
@@ -84,7 +84,7 @@ class FooQuery extends Query
                     ->withValidation([
                         'nullable',
                         'string',
-                        new Enum(FooState::class)
+                        new Enum(FooState::class),
                     ])
             );
 

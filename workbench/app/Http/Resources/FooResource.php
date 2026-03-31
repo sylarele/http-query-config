@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Workbench\App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\MissingValue;
 use Override;
 use Workbench\App\Models\Foo;
 
@@ -30,7 +29,7 @@ class FooResource extends JsonResource
             'bars' => $this->whenLoaded(
                 'bars',
                 fn () => BarResource::collection($this->resource->bars)
-            )
+            ),
         ];
     }
 }

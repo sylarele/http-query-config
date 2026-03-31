@@ -1,5 +1,7 @@
 name: setup php
+
 description: "Setup the php composer env"
+
 inputs:
   php-version:
     required: true
@@ -27,10 +29,12 @@ runs:
         cache-name-php: cache-composer
       with:
         path: vendor
-        key: ${{ runner.os }}-php${{ inputs.php-version }}-laravel${{ inputs.laravel-version }}-${{ env.cache-name-php }}-${{ hashFiles('**/composer.json') }}
+        key: ${{ runner.os }}-php-${{ inputs.php-version }}-laravel${{ inputs.laravel-version }}-build-${{ env.cache-name-php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
-          ${{ runner.os }}-php${{ inputs.php-version }}-laravel${{ inputs.laravel-version }}-${{ env.cache-name-php }}-
-          ${{ runner.os }}-php${{ inputs.php-version }}-laravel${{ inputs.laravel-version }}-
+          ${{ runner.os }}-php-${{ inputs.php-version }}-laravel-${{ inputs.laravel-version }}-build-${{ env.cache-name-php }}-
+          ${{ runner.os }}-php-${{ inputs.php-version }}-laravel-${{ inputs.laravel-version }}-
+          ${{ runner.os }}-php-${{ inputs.php-version }}-
+          ${{ runner.os }}-
 
     - name: Install php dependencies
       if: steps.cache-composer.outputs.cache-hit != 'true'

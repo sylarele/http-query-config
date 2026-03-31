@@ -10,17 +10,17 @@ namespace Sylarele\HttpQueryConfig\Enums;
 enum PaginationMode: string
 {
     /**
-     * Offset pagination (standard pagination)
+     * Offset pagination (standard pagination).
      */
     case Offset = 'offset';
 
     /**
-     * Cursor pagination (better for infinite scrolling)
+     * Cursor pagination (better for infinite scrolling).
      */
     case Cursor = 'cursor';
 
     /**
-     * No pagination (all results returned)
+     * No pagination (all results returned).
      */
     case None = 'none';
 

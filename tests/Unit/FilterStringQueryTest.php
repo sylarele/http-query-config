@@ -7,13 +7,23 @@ namespace Sylarele\HttpQueryConfig\Tests\Unit;
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Override;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Sylarele\HttpQueryConfig\Concerns\HttpBuilder;
 use Sylarele\HttpQueryConfig\Enums\FilterMode;
+use Sylarele\HttpQueryConfig\Http\QueryRequest;
+use Sylarele\HttpQueryConfig\Query\Query;
 use Sylarele\HttpQueryConfig\Tests\TestCase;
 use Workbench\App\Models\Foo;
 use Workbench\App\Queries\FooQuery;
 use Workbench\Database\Factories\FooFactory;
 
+/**
+ * @internal
+ */
+#[CoversClass(HttpBuilder::class)]
+#[CoversClass(Query::class)]
+#[CoversClass(QueryRequest::class)]
 final class FilterStringQueryTest extends TestCase
 {
     use RefreshDatabase;
@@ -45,6 +55,13 @@ final class FilterStringQueryTest extends TestCase
         self::assertSame($expected, $foo->name);
     }
 
+    public static function getFiltersProvider(): Generator
+    {
+        yield 'Equals' => [FilterMode::Equals, 'Alice', 'Alice'];
+
+        yield 'Contains' => [FilterMode::Contains, 'Ali', 'Alice'];
+    }
+
     private function createFoos(): void
     {
         FooFactory::new()
@@ -55,11 +72,5 @@ final class FilterStringQueryTest extends TestCase
                 ['name' => 'Oscar'],
                 ['name' => 'Dave'],
             ]);
-    }
-
-    public static function getFiltersProvider(): Generator
-    {
-        yield 'Equals' => [FilterMode::Equals, 'Alice', 'Alice'];
-        yield 'Contains' => [FilterMode::Contains, 'Ali', 'Alice'];
     }
 }
