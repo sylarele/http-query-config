@@ -2,13 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylarele\HttpQueryConfig\Feature;
+namespace Sylarele\HttpQueryConfig\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Sylarele\HttpQueryConfig\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Sylarele\HttpQueryConfig\Concerns\HttpBuilder;
+use Sylarele\HttpQueryConfig\Http\QueryRequest;
+use Sylarele\HttpQueryConfig\Query\Query;
+use Sylarele\HttpQueryConfig\Tests\TestCase;
 use Workbench\Database\Factories\FooFactory;
 
-class FieldsOnlyQueryTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(HttpBuilder::class)]
+#[CoversClass(Query::class)]
+#[CoversClass(QueryRequest::class)]
+final class FieldsOnlyQueryTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -50,7 +60,7 @@ class FieldsOnlyQueryTest extends TestCase
             )
             ->assertJsonPath(
                 'errors',
-                ["only.0" => ["The selected only.0 is invalid."]]
+                ['only.0' => ['The selected only.0 is invalid.']]
             );
     }
 

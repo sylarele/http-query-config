@@ -31,7 +31,7 @@ trait HttpBuilder
      */
     public function configureForQuery(?Query $query): static
     {
-        if (!$query instanceof Query) {
+        if (! $query instanceof Query) {
             return $this;
         }
 
@@ -86,7 +86,6 @@ trait HttpBuilder
         return $query->getPagination()->handleQuery($this);
     }
 
-
     /**
      * Applies a scope filter to the query, injecting its dependencies.
      * @param ScopeValue<TModel,self> $scope
@@ -94,6 +93,7 @@ trait HttpBuilder
     protected function applyScope(ScopeValue $scope): self
     {
         $methode = $scope->getScopeName();
+
         if ($methode instanceof Closure) {
             $applyScope = $methode($this)(...$scope->getArgumentsMap());
 
@@ -105,7 +105,7 @@ trait HttpBuilder
         }
 
         if (method_exists($this, $methode)) {
-            $this->$methode(...$scope->getArgumentsMap());
+            $this->{$methode}(...$scope->getArgumentsMap());
         }
 
         return $this;
@@ -125,7 +125,7 @@ trait HttpBuilder
                 }
 
                 foreach ($relation->getScopes() as $scope) {
-                    if (!$builder instanceof MorphTo) {
+                    if (! $builder instanceof MorphTo) {
                         /** @var callable $callableQuery */
                         $callableQuery = [$builder->getQuery(), $scope];
                         \call_user_func($callableQuery);
@@ -139,8 +139,8 @@ trait HttpBuilder
                         ->getCasts()[$builder->getMorphType()] ?? null;
 
                     if (
-                        (!\is_object($types) && !\is_string($types))
-                        || !is_subclass_of($types, BackedEnum::class)
+                        (! \is_object($types) && ! \is_string($types))
+                        || ! is_subclass_of($types, BackedEnum::class)
                     ) {
                         throw new InvalidArgumentException(
                             \sprintf(
@@ -189,7 +189,7 @@ trait HttpBuilder
             FilterMode::Contains => $this->where(
                 column: $filter->getField(),
                 operator: 'like',
-                value: '%' . $this->escapeSQLLike($filter->getValue()) . '%',
+                value: '%'.$this->escapeSQLLike($filter->getValue()).'%',
                 boolean: $filter->getEloquentBoolean(),
             ),
             default => throw new NotImplementedException('Invalid filter mode'),
@@ -291,7 +291,7 @@ trait HttpBuilder
         };
     }
 
-    protected function applyArrayFilter(FilterValue $filter): static|Builder
+    protected function applyArrayFilter(FilterValue $filter): Builder|static
     {
         return match ($filter->getMode()) {
             FilterMode::In => $this->whereIn($filter->getField(), $filter->getValue()),
@@ -301,7 +301,7 @@ trait HttpBuilder
 
     private function escapeSQLLike(mixed $value): string
     {
-        if (!\is_string($value)) {
+        if (! \is_string($value)) {
             throw new InvalidArgumentException('value must be a string');
         }
 

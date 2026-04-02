@@ -173,7 +173,7 @@ class Filter implements QueryFilter
     }
 
     /**
-     * @return array<string, array<int,string|ValidationRule|Stringable>> the validation rules for the filter
+     * @return array<string, array<int,string|Stringable|ValidationRule>> the validation rules for the filter
      */
     #[Override]
     public function getValidation(): array

@@ -13,7 +13,7 @@ use Workbench\App\Builders\FooBuilder;
 use Workbench\App\Enums\FooState;
 
 /**
- * - Attributes
+ * - Attributes.
  * @property int $id
  * @property string $name
  * @property int $size
@@ -25,11 +25,9 @@ use Workbench\App\Enums\FooState;
  */
 class Foo extends Model
 {
-    /** @var array<string, string> */
-    protected $casts = [
-        'state' => FooState::class,
-    ];
-
+    /**
+     * @return HasMany<Bar, $this>
+     */
     public function bars(): HasMany
     {
         return $this->hasMany(Bar::class);
@@ -42,5 +40,16 @@ class Foo extends Model
     public function newEloquentBuilder($query): FooBuilder
     {
         return new FooBuilder($query);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    #[Override]
+    protected function casts(): array
+    {
+        return [
+            'state' => FooState::class,
+        ];
     }
 }

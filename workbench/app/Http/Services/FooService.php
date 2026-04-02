@@ -10,6 +10,9 @@ use Workbench\App\Queries\FooQuery;
 
 class FooService
 {
+    /**
+     * @return QueryResult<Foo>
+     */
     public function list(FooQuery $query): QueryResult
     {
         return Foo::query()

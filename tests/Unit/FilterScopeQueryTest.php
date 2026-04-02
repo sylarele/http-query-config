@@ -2,17 +2,27 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylarele\HttpQueryConfig\Unit;
+namespace Sylarele\HttpQueryConfig\Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Override;
-use Tests\Sylarele\HttpQueryConfig\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Sylarele\HttpQueryConfig\Concerns\HttpBuilder;
+use Sylarele\HttpQueryConfig\Http\QueryRequest;
+use Sylarele\HttpQueryConfig\Query\Query;
+use Sylarele\HttpQueryConfig\Tests\TestCase;
 use Workbench\App\Enums\FooState;
 use Workbench\App\Models\Foo;
 use Workbench\App\Queries\FooQuery;
 use Workbench\Database\Factories\FooFactory;
 
-class FilterScopeQueryTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(HttpBuilder::class)]
+#[CoversClass(Query::class)]
+#[CoversClass(QueryRequest::class)]
+final class FilterScopeQueryTest extends TestCase
 {
     use RefreshDatabase;
 

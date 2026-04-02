@@ -2,16 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylarele\HttpQueryConfig\Feature;
+namespace Sylarele\HttpQueryConfig\Tests\Feature;
 
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Sylarele\HttpQueryConfig\Concerns\HttpBuilder;
 use Sylarele\HttpQueryConfig\Enums\FilterMode;
-use Tests\Sylarele\HttpQueryConfig\TestCase;
+use Sylarele\HttpQueryConfig\Http\QueryRequest;
+use Sylarele\HttpQueryConfig\Query\Query;
+use Sylarele\HttpQueryConfig\Tests\TestCase;
 use Workbench\Database\Factories\FooFactory;
 
-class FilterStringQueryTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(HttpBuilder::class)]
+#[CoversClass(Query::class)]
+#[CoversClass(QueryRequest::class)]
+final class FilterStringQueryTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -76,10 +86,21 @@ class FilterStringQueryTest extends TestCase
             ->assertJsonPath(
                 'errors',
                 [
-                    "name.not" => ["The name.not field must be true or false."],
-                    "name.mode" => ["The selected name.mode is invalid."],
+                    'name.not' => ['The name.not field must be true or false.'],
+                    'name.mode' => ['The selected name.mode is invalid.'],
                 ]
             );
+    }
+
+    public static function getFiltersProvider(): Generator
+    {
+        yield 'Equals' => [FilterMode::Equals, false, 'Alice', 'Alice', 1];
+
+        yield 'Contains' => [FilterMode::Contains, false, 'Ali', 'Alice', 1];
+
+        yield 'Not Equals' => [FilterMode::Equals, true, 'Alice', 'Carol', 4];
+
+        yield 'Not Contains' => [FilterMode::Contains, true, 'Ali', 'Carol', 4];
     }
 
     private function createFoos(): void
@@ -92,13 +113,5 @@ class FilterStringQueryTest extends TestCase
                 ['name' => 'Oscar'],
                 ['name' => 'Dave'],
             ]);
-    }
-
-    public static function getFiltersProvider(): Generator
-    {
-        yield 'Equals' => [FilterMode::Equals, false, 'Alice', 'Alice', 1];
-        yield 'Contains' => [FilterMode::Contains, false, 'Ali', 'Alice', 1];
-        yield 'Not Equals' => [FilterMode::Equals, true, 'Alice', 'Carol', 4];
-        yield 'Not Contains' => [FilterMode::Contains, true, 'Ali', 'Carol', 4];
     }
 }

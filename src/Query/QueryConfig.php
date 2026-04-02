@@ -232,7 +232,7 @@ class QueryConfig
                 && $f instanceof Filter,
         );
 
-        if (!$found instanceof Filter) {
+        if (! $found instanceof Filter) {
             throw new RuntimeException(
                 \sprintf('No filter was registered with name `%s`.', $filter)
             );
@@ -256,7 +256,7 @@ class QueryConfig
                 && $f instanceof Scope,
         );
 
-        if (!$foundScope instanceof Scope) {
+        if (! $foundScope instanceof Scope) {
             throw new RuntimeException(
                 \sprintf('No filter was registered with name `%s`.', $scope)
             );
@@ -271,7 +271,7 @@ class QueryConfig
     public function getSortOrFail(Sort|string $sort): Sort
     {
         if ($sort instanceof Sort) {
-            if (!\in_array($sort, $this->sorts, true)) {
+            if (! \in_array($sort, $this->sorts, true)) {
                 throw new RuntimeException(
                     \sprintf('Given sort named `%s` is not registered on this query type.', $sort),
                 );
@@ -285,7 +285,7 @@ class QueryConfig
             callback: static fn (Sort $s): bool => $s->getName() === $sort,
         );
 
-        if (!$foundSort instanceof Sort) {
+        if (! $foundSort instanceof Sort) {
             throw new RuntimeException(
                 \sprintf('No sort was registered with name `%s`.', $sort),
             );
@@ -300,7 +300,7 @@ class QueryConfig
     public function getRelationship(Relationship|string $relationship): ?Relationship
     {
         if ($relationship instanceof Relationship) {
-            if (!\in_array($relationship, $this->relationships)) {
+            if (! \in_array($relationship, $this->relationships)) {
                 return null;
             }
 
@@ -312,7 +312,7 @@ class QueryConfig
             callback: static fn (Relationship $r): bool => $r->getName() === $relationship,
         );
 
-        if (!$foundRelationship instanceof Relationship) {
+        if (! $foundRelationship instanceof Relationship) {
             throw new RuntimeException('Invalid type for `$foundRelationship`');
         }
 
@@ -325,7 +325,7 @@ class QueryConfig
     public function getRelationshipOrFail(Relationship|string $relationship): Relationship
     {
         if ($relationship instanceof Relationship) {
-            if (!\in_array($relationship, $this->relationships)) {
+            if (! \in_array($relationship, $this->relationships)) {
                 throw new RuntimeException(
                     \sprintf(
                         'Given relationship named `%s` is not registered on this query type.',
@@ -342,7 +342,7 @@ class QueryConfig
             callback: static fn (Relationship $r): bool => $r->getName() === $relationship,
         );
 
-        if (!$foundRelationship instanceof Relationship) {
+        if (! $foundRelationship instanceof Relationship) {
             throw new RuntimeException('Invalid type for `$foundRelationship`');
         }
 

@@ -14,9 +14,9 @@ use Override;
 /**
  * Like date_format, but allows multiple date formats.
  */
-class DateFormats implements ValidationRule
+final class DateFormats implements ValidationRule
 {
-    final public const array ISO_FORMATS = [
+    public const array ISO_FORMATS = [
         DateTimeInterface::ATOM,
         DateTimeInterface::RFC3339,
         DateTimeInterface::RFC3339_EXTENDED,
@@ -26,7 +26,7 @@ class DateFormats implements ValidationRule
      * @param  array<int,string>  $dateFormats
      */
     public function __construct(
-        protected array $dateFormats,
+        private array $dateFormats,
     ) {
     }
 
@@ -45,7 +45,7 @@ class DateFormats implements ValidationRule
             foreach ($this->dateFormats as $format) {
                 $date = DateTime::createFromFormat('!'.$format, (string) $value);
 
-                if ($date && $date->format($format) === (string) $value) {
+                if ($date instanceof DateTime && $date->format($format) === (string) $value) {
                     return;
                 }
             }

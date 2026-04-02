@@ -2,16 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylarele\HttpQueryConfig\Feature;
+namespace Sylarele\HttpQueryConfig\Tests\Feature;
 
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Sylarele\HttpQueryConfig\Concerns\HttpBuilder;
 use Sylarele\HttpQueryConfig\Enums\SortOrder;
-use Tests\Sylarele\HttpQueryConfig\TestCase;
+use Sylarele\HttpQueryConfig\Http\QueryRequest;
+use Sylarele\HttpQueryConfig\Query\Query;
+use Sylarele\HttpQueryConfig\Tests\TestCase;
 use Workbench\Database\Factories\FooFactory;
 
-class SortQueryTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(HttpBuilder::class)]
+#[CoversClass(Query::class)]
+#[CoversClass(QueryRequest::class)]
+final class SortQueryTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -64,10 +74,23 @@ class SortQueryTest extends TestCase
             ->assertJsonPath(
                 'errors',
                 [
-                    "sortBy" => ["The selected sort by is invalid."],
-                    "sortOrder" => ["The selected sort order is invalid."],
+                    'sortBy' => ['The selected sort by is invalid.'],
+                    'sortOrder' => ['The selected sort order is invalid.'],
                 ]
             );
+    }
+
+    public static function getSortsProvider(): Generator
+    {
+        yield 'Ascending' => [
+            SortOrder::Ascending,
+            ['Alice', 'Carol', 'Dave', 'Eve', 'Oscar'],
+        ];
+
+        yield 'Descending' => [
+            SortOrder::Descending,
+            ['Oscar', 'Eve', 'Dave', 'Carol', 'Alice'],
+        ];
     }
 
     private function createFoos(): void
@@ -80,17 +103,5 @@ class SortQueryTest extends TestCase
                 ['name' => 'Oscar'],
                 ['name' => 'Dave'],
             ]);
-    }
-
-    public static function getSortsProvider(): Generator
-    {
-        yield 'Ascending' => [
-            SortOrder::Ascending,
-            ['Alice', 'Carol', 'Dave', 'Eve', 'Oscar']
-        ];
-        yield 'Descending' => [
-            SortOrder::Descending,
-            ['Oscar', 'Eve', 'Dave', 'Carol', 'Alice']
-        ];
     }
 }

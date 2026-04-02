@@ -47,7 +47,7 @@ readonly class OffsetPagination implements QueryPagination
             page: $this->page,
         );
 
-        /** @var \Illuminate\Support\Collection<int,Model> $items */
+        /** @var array<int,Model> $items */
         $items = $result->items();
 
         return new LengthAwarePaginator(

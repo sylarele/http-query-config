@@ -33,12 +33,12 @@ class Scope implements QueryFilter
     /**
      * @param TModel $model the model linked to the query
      * @param string $name the name of the filter on the query
-     * @param string|(Closure(TBuilder<TModel>): (Closure(mixed...): TBuilder<TModel>)) $scopeName the name of the Builder scope to call
+     * @param (Closure(TBuilder<TModel>): (Closure(mixed...): TBuilder<TModel>))|string $scopeName the name of the Builder scope to call
      */
     public function __construct(
         protected readonly Model $model,
         protected readonly string $name,
-        protected readonly string|Closure $scopeName,
+        protected readonly Closure|string $scopeName,
     ) {
     }
 
@@ -72,9 +72,9 @@ class Scope implements QueryFilter
     }
 
     /**
-     * @return string|(Closure(TBuilder<TModel>): (Closure(mixed...): TBuilder<TModel>)) the name of the scope on the model
+     * @return (Closure(TBuilder<TModel>): (Closure(mixed...): TBuilder<TModel>))|string the name of the scope on the model
      */
-    public function getScopeName(): string|Closure
+    public function getScopeName(): Closure|string
     {
         return $this->scopeName;
     }
@@ -98,7 +98,7 @@ class Scope implements QueryFilter
             return;
         }
 
-        if ($this->scopeName instanceof  Closure) {
+        if ($this->scopeName instanceof Closure) {
             $closureName = $this->scopeName;
             $closure = $closureName($this->model->newQuery());
             $reflection = new ReflectionFunction($closure);
@@ -121,7 +121,7 @@ class Scope implements QueryFilter
     {
         $result = [];
 
-        if ($this->scopeName instanceof  Closure) {
+        if ($this->scopeName instanceof Closure) {
             $closureName = $this->scopeName;
             $closure = $closureName($this->model->newQuery());
             $reflection = new ReflectionFunction($closure);
@@ -146,13 +146,13 @@ class Scope implements QueryFilter
      * @return ValidationRules
      */
     protected function guessArgumentValidation(
-        ReflectionMethod|ReflectionFunction $reflection,
+        ReflectionFunction|ReflectionMethod $reflection,
         ScopeArgument $argument,
     ): array {
         $parameter = $this->getArgumentParameter($reflection, $argument);
         $type = $parameter->getType();
 
-        if (!$type instanceof ReflectionNamedType || !$type->isBuiltin()) {
+        if (! $type instanceof ReflectionNamedType || ! $type->isBuiltin()) {
             throw new InvalidScopeArgumentTypeException(
                 model: $this->model,
                 scope: $this,
@@ -164,14 +164,14 @@ class Scope implements QueryFilter
             $argument->getName() => [
                 $parameter->isOptional() || $type->allowsNull()
                     ? 'nullable'
-                    : 'required_with:' . $this->getName(),
+                    : 'required_with:'.$this->getName(),
                 $this->builtinTypeToValidation($argument, $type->getName()),
-            ]
+            ],
         ];
     }
 
     protected function getArgumentParameter(
-        ReflectionMethod|ReflectionFunction $reflection,
+        ReflectionFunction|ReflectionMethod $reflection,
         ScopeArgument $argument,
     ): ReflectionParameter {
         $transformer = $argument->getTransformer();
@@ -181,7 +181,7 @@ class Scope implements QueryFilter
 
             $reflectionParameter = Arr::first($transformerReflection->getParameters());
 
-            if (!$reflectionParameter instanceof ReflectionParameter) {
+            if (! $reflectionParameter instanceof ReflectionParameter) {
                 throw new ScopeParameterNotFoundException(
                     model: $this->model,
                     scope: $this,
@@ -199,7 +199,7 @@ class Scope implements QueryFilter
             ): bool => $parameter->getName() === $argument->getParameterName(),
         );
 
-        if (!$result instanceof ReflectionParameter) {
+        if (! $result instanceof ReflectionParameter) {
             throw new ScopeParameterNotFoundException(
                 model: $this->model,
                 scope: $this,

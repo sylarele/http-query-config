@@ -6,10 +6,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class() extends Migration
+{
     public function up(): void
     {
-        Schema::create('bars', function (Blueprint $table): void {
+        Schema::create('bars', static function (Blueprint $table): void {
             $table->increments('id');
             $table->string('name');
             $table->unsignedBigInteger('foo_id');

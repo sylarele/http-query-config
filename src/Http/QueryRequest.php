@@ -138,7 +138,7 @@ abstract class QueryRequest extends FormRequest
     {
         $class = $this->getQuery();
 
-        if (!is_subclass_of($class, Query::class)) {
+        if (! is_subclass_of($class, Query::class)) {
             throw new RuntimeException(
                 \sprintf('Given query class `%s` does not extend Query.', $class)
             );
@@ -149,7 +149,7 @@ abstract class QueryRequest extends FormRequest
 
     /**
      * Parses a given filter value depending on its type.
-     * @param null|array<scalar>|float|int|string $value
+     * @param array<scalar>|float|int|string|null $value
      */
     protected function parseFilterValue(
         Filter $filter,
@@ -178,10 +178,10 @@ abstract class QueryRequest extends FormRequest
     {
         $name = $filter->getName();
 
-        /** @var null|array<scalar>|float|int|string $value */
-        $value = $this->input($name . '.value');
+        /** @var array<scalar>|float|int|string|null $value */
+        $value = $this->input($name.'.value');
 
-        $mode = FilterMode::tryFrom($this->string($name . '.mode')->value())
+        $mode = FilterMode::tryFrom($this->string($name.'.mode')->value())
             ?? $filter->getType()->getDefaultMode();
 
         $value = $this->parseFilterValue($filter, $value);
@@ -194,13 +194,13 @@ abstract class QueryRequest extends FormRequest
             filter: $filter,
             mode: $mode,
             value: $value,
-            not: $this->boolean($name . '.not'),
+            not: $this->boolean($name.'.not'),
         );
     }
 
     protected function applyScopeToQuery(Scope $scope, Query $instance): void
     {
-        if (!$this->filled($scope->getName())) {
+        if (! $this->filled($scope->getName())) {
             return;
         }
 
@@ -307,7 +307,7 @@ abstract class QueryRequest extends FormRequest
             'sometimes',
             'integer',
             'min:1',
-            'max:' . $pagination->getMaxLimit(),
+            'max:'.$pagination->getMaxLimit(),
         ];
 
         $rules['page'] = [

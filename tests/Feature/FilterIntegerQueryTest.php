@@ -2,21 +2,31 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylarele\HttpQueryConfig\Feature;
+namespace Sylarele\HttpQueryConfig\Tests\Feature;
 
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Sylarele\HttpQueryConfig\Concerns\HttpBuilder;
 use Sylarele\HttpQueryConfig\Enums\FilterMode;
-use Tests\Sylarele\HttpQueryConfig\TestCase;
+use Sylarele\HttpQueryConfig\Http\QueryRequest;
+use Sylarele\HttpQueryConfig\Query\Query;
+use Sylarele\HttpQueryConfig\Tests\TestCase;
 use Workbench\Database\Factories\FooFactory;
 
-class FilterIntegerQueryTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(HttpBuilder::class)]
+#[CoversClass(Query::class)]
+#[CoversClass(QueryRequest::class)]
+final class FilterIntegerQueryTest extends TestCase
 {
     use RefreshDatabase;
 
     /**
-     * @param array<int,array<string,string>> $arguments
+     * @param array<int, string> $arguments
      */
     #[DataProvider('getValidatedFilterProvider')]
     public function testShouldValidatedFilter(array $arguments, string $except): void
@@ -74,9 +84,42 @@ class FilterIntegerQueryTest extends TestCase
             ->assertJsonCount(\count($expected), 'data');
 
         foreach ($expected as $key => $name) {
-            $fooName = $response->json('data.' . $key . '.name');
+            $fooName = $response->json('data.'.$key.'.name');
             self::assertSame($name, $fooName);
         }
+    }
+
+    public static function getFiltersProvider(): Generator
+    {
+        yield 'Equals' => [
+            FilterMode::Equals,
+            '1',
+            ['Carol'],
+        ];
+
+        yield 'GreaterThan' => [
+            FilterMode::GreaterThan,
+            '3',
+            ['Oscar', 'Dave'],
+        ];
+
+        yield 'GreaterThanOrEqual' => [
+            FilterMode::GreaterThanOrEqual,
+            '3',
+            ['Eve', 'Oscar', 'Dave'],
+        ];
+
+        yield 'LessThan' => [
+            FilterMode::LessThan,
+            '3',
+            ['Carol', 'Alice'],
+        ];
+
+        yield 'LessThanOrEqual' => [
+            FilterMode::LessThanOrEqual,
+            '3',
+            ['Carol', 'Alice', 'Eve'],
+        ];
     }
 
     private function createFoos(): void
@@ -89,34 +132,5 @@ class FilterIntegerQueryTest extends TestCase
                 ['name' => 'Oscar', 'size' => 4],
                 ['name' => 'Dave', 'size' => 5],
             ]);
-    }
-
-    public static function getFiltersProvider(): Generator
-    {
-        yield 'Equals' => [
-            FilterMode::Equals,
-            '1',
-            ['Carol']
-        ];
-        yield 'GreaterThan' => [
-            FilterMode::GreaterThan,
-            '3',
-            ['Oscar', 'Dave']
-        ];
-        yield 'GreaterThanOrEqual' => [
-            FilterMode::GreaterThanOrEqual,
-            '3',
-            ['Eve', 'Oscar', 'Dave']
-        ];
-        yield 'LessThan' => [
-            FilterMode::LessThan,
-            '3',
-            ['Carol', 'Alice']
-        ];
-        yield 'LessThanOrEqual' => [
-            FilterMode::LessThanOrEqual,
-            '3',
-            ['Carol', 'Alice', 'Eve']
-        ];
     }
 }

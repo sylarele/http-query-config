@@ -65,7 +65,7 @@ class ScopeArgument
     /**
      * Sets the transformer for this argument.
      *
-     * @param Closure(string|array<int|string,string>, object|null): mixed|Transformer $transformer
+     * @param Closure(array<int|string,string>|string, object|null): mixed|Transformer $transformer
      */
     public function transform(Closure|Transformer $transformer): static
     {
@@ -95,7 +95,7 @@ class ScopeArgument
      */
     public function addedValidation(string $subKey, array $rules): static
     {
-        $this->validation[$this->name . '.' . $subKey] = $rules;
+        $this->validation[$this->name.'.'.$subKey] = $rules;
 
         return $this;
     }
@@ -148,7 +148,7 @@ class ScopeArgument
     {
         $type = $reflection->getType();
 
-        if (!$type instanceof ReflectionNamedType) {
+        if (! $type instanceof ReflectionNamedType) {
             return $this;
         }
 

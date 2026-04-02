@@ -14,6 +14,7 @@ use Workbench\App\Models\Foo;
  */
 final class FooBuilder extends Builder
 {
+    /** @use HttpBuilder<Foo> */
     use HttpBuilder;
 
     public function whereName(string $value): self
