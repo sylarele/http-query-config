@@ -6,6 +6,7 @@ namespace Sylarele\HttpQueryConfig\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use RuntimeException;
 use Sylarele\HttpQueryConfig\Concerns\HttpBuilder;
 use Sylarele\HttpQueryConfig\Http\QueryRequest;
 use Sylarele\HttpQueryConfig\Query\Query;
@@ -39,6 +40,44 @@ final class WithQueryTest extends TestCase
             ->assertOk()
             ->assertJsonCount(1, 'data.0.bars')
             ->assertJsonPath('data.0.bars.0.name', 'Antoine');
+    }
+
+    public function testShouldLoadNestedRelationWithRegisteredAncestors(): void
+    {
+        $this->createFoos();
+
+        $this
+            ->getJson(
+                route(
+                    'foos.index',
+                    [
+                        'with' => ['bars.foo'],
+                    ]
+                )
+            )
+            ->assertOk()
+            ->assertJsonPath('data.0.bars.0.foo.name', 'Carol');
+    }
+
+    public function testShouldFailWhenAncestorRelationIsNotRegistered(): void
+    {
+        $this->createFoos();
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(
+            'Relation `bars.foo.bars` must be registered before its sub-relation `bars.foo.bars.foo`.'
+        );
+
+        $this->withoutExceptionHandling();
+
+        $this->getJson(
+            route(
+                'foos.index',
+                [
+                    'with' => ['bars.foo.bars.foo'],
+                ]
+            )
+        );
     }
 
     public function testShouldValidatedSort(): void

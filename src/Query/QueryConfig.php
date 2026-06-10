@@ -307,16 +307,10 @@ class QueryConfig
             return $relationship;
         }
 
-        $foundRelationship = Arr::first(
+        return Arr::first(
             array: $this->relationships,
             callback: static fn (Relationship $r): bool => $r->getName() === $relationship,
         );
-
-        if (! $foundRelationship instanceof Relationship) {
-            throw new RuntimeException('Invalid type for `$foundRelationship`');
-        }
-
-        return $foundRelationship;
     }
 
     /**
@@ -343,7 +337,12 @@ class QueryConfig
         );
 
         if (! $foundRelationship instanceof Relationship) {
-            throw new RuntimeException('Invalid type for `$foundRelationship`');
+            throw new RuntimeException(
+                \sprintf(
+                    'Given relationship named `%s` is not registered on this query type.',
+                    $relationship,
+                ),
+            );
         }
 
         return $foundRelationship;

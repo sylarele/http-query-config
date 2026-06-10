@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder;
 use InvalidArgumentException;
+use RuntimeException;
 use Sylarele\HttpQueryConfig\Contracts\QueryResult;
 use Sylarele\HttpQueryConfig\Enums\FilterMode;
 use Sylarele\HttpQueryConfig\Enums\FilterType;
@@ -159,18 +160,26 @@ trait HttpBuilder
         $dotPosition = strrpos($relation->getName(), '.');
 
         if ($dotPosition !== false) {
-            $subRelation = $query
-                ->getConfig()
-                ->getRelationship(
-                    relationship: substr($relation->getName(), 0, $dotPosition),
-                );
+            $parentName = substr($relation->getName(), 0, $dotPosition);
 
-            if ($subRelation instanceof Relationship) {
-                $builder = $this->applyRelationship(
-                    $query,
-                    new RelationshipValue(relationship: $subRelation)
+            $parentRelation = $query
+                ->getConfig()
+                ->getRelationship(relationship: $parentName);
+
+            if (! $parentRelation instanceof Relationship) {
+                throw new RuntimeException(
+                    \sprintf(
+                        'Relation `%s` must be registered before its sub-relation `%s`.',
+                        $parentName,
+                        $relation->getName(),
+                    ),
                 );
             }
+
+            $builder = $this->applyRelationship(
+                $query,
+                new RelationshipValue(relationship: $parentRelation)
+            );
         }
 
         return $builder;
