@@ -93,6 +93,8 @@ class FooQuery extends Query
 
         // With
         $config->with('bars');
+        $config->with('bars.foo'); // nested: ancestor `bars` is registered
+        $config->with('bars.foo.bars.foo'); // ancestor `bars.foo.bars` is intentionally NOT registered
 
         $config->only(['name', 'size']);
     }

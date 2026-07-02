@@ -14,7 +14,7 @@ use Workbench\App\Models\Bar;
 class BarResource extends JsonResource
 {
     /**
-     * @return array<string,scalar>
+     * @return array<string,mixed>
      */
     #[Override]
     public function toArray($request): array
@@ -22,6 +22,10 @@ class BarResource extends JsonResource
         return [
             'id' => $this->resource->id,
             'name' => $this->resource->name,
+            'foo' => $this->whenLoaded(
+                'foo',
+                fn (): FooResource => new FooResource($this->resource->foo)
+            ),
         ];
     }
 }
