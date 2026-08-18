@@ -16,7 +16,7 @@ class Relationship
     protected array $scopes = [];
 
     /**
-     * @param  string  $name the name of the relationship
+     * @param string $name the name of the relationship
      */
     public function __construct(
         protected readonly string $name,

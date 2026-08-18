@@ -16,8 +16,8 @@ class ScopeArgumentValue
     protected mixed $value = null;
 
     /**
-     * @param  WeakReference  $query    the Query instance this argument value belongs to (WeakReference to avoid circular references)
-     * @param  ScopeArgument  $argument the argument config
+     * @param WeakReference $query the Query instance this argument value belongs to (WeakReference to avoid circular references)
+     * @param ScopeArgument $argument the argument config
      */
     public function __construct(
         protected readonly WeakReference $query,

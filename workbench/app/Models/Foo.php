@@ -18,9 +18,9 @@ use Workbench\App\Enums\FooState;
  * @property string $name
  * @property int $size
  * @property FooState $state
- *  - Relations
+ *                           - Relations
  * @property Collection<int,Bar> $bars
- *  - Support
+ *                                     - Support
  * @method static FooBuilder query()
  */
 class Foo extends Model

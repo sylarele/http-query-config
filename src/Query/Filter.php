@@ -37,9 +37,9 @@ class Filter implements QueryFilter
     protected bool $dummy = false;
 
     /**
-     * @param  TModel  $model  the model linked to the query
-     * @param  string  $name   the name of the filter on the query
-     * @param  Closure  $mutate internal, used to transform the filter into a scope if scope() is called
+     * @param TModel $model the model linked to the query
+     * @param string $name the name of the filter on the query
+     * @param Closure $mutate internal, used to transform the filter into a scope if scope() is called
      */
     public function __construct(
         protected readonly Model $model,
@@ -84,7 +84,7 @@ class Filter implements QueryFilter
     /**
      * Transforms the filter into a scope filter.
      *
-     * @param  string|null  $scopeName the name of the scope on the model, if different from the filter name
+     * @param string|null $scopeName the name of the scope on the model, if different from the filter name
      *
      * @see Scope
      */

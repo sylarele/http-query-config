@@ -21,12 +21,12 @@
     "require-dev": {
         "orchestra/testbench": "^10.0|^11.0",
         "orchestra/testbench-core": "^10.0|^11.0",
-        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan": "^2.2",
         "phpstan/phpstan-phpunit": "^2.0",
-        "phpunit/phpunit": "^12.5|^13.0",
-        "rector/rector": "^2.3",
+        "phpunit/phpunit": "^12.5|^13.3",
+        "rector/rector": "^2.6",
         "shipmonk/composer-dependency-analyser": "^1.8",
-        "structuraphp/structura": "^0.7.1",
+        "structuraphp/structura": "^0.8",
         "sylarele/php-cs-fixer-config": "^2.0"
     },
     "config": {

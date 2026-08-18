@@ -51,7 +51,7 @@ class QueryConfig
      * Adds a filter to the config.
      * Can be transformed into a scope by chaining the scope() method.
      *
-     * @param  string  $name the query name of the filter
+     * @param string $name the query name of the filter
      */
     public function filter(string $name): Filter
     {
@@ -94,7 +94,7 @@ class QueryConfig
     /**
      * Adds a relationship to the config.
      *
-     * @param  string  $relation the query name of the relationship
+     * @param string $relation the query name of the relationship
      */
     public function with(string $relation): Relationship
     {
@@ -119,7 +119,7 @@ class QueryConfig
     /**
      * Adds a sort option to the config.
      *
-     * @param  string  $name the query name of the sort
+     * @param string $name the query name of the sort
      */
     public function sort(string $name): Sort
     {
@@ -152,8 +152,8 @@ class QueryConfig
     /**
      * Adds a default sort to the config.
      *
-     * @param  Sort|string  $sort  the sort name to add
-     * @param  SortOrder  $order the order to sort by
+     * @param Sort|string $sort the sort name to add
+     * @param SortOrder $order the order to sort by
      */
     public function defaultSort(Sort|string $sort, SortOrder $order): static
     {

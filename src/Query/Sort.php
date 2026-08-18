@@ -17,8 +17,8 @@ class Sort implements Stringable
     protected string $field;
 
     /**
-     * @param  QueryConfig  $config the config to apply the default sort to
-     * @param  string  $name   the sort name on the query
+     * @param QueryConfig $config the config to apply the default sort to
+     * @param string $name the sort name on the query
      */
     public function __construct(
         protected readonly QueryConfig $config,

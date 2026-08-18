@@ -14,7 +14,7 @@ class HigherOrderFilterProxy
     /**
      * The filters to apply config to.
      *
-     * @param  array<int, Filter>  $filters
+     * @param array<int, Filter> $filters
      */
     public function __construct(
         protected array $filters,

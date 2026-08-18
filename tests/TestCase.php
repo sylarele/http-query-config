@@ -22,7 +22,7 @@ class TestCase extends OrchestraTestCase
     /**
      * Define environment setup.
      *
-     * @param  Application  $app
+     * @param Application $app
      */
     #[Override]
     protected function defineEnvironment($app)

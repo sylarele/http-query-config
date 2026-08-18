@@ -15,9 +15,9 @@ use Workbench\App\Builders\BarBuilder;
  * @property int $id
  * @property string $name
  * @property int $foo_id
- * - Relations
+ *                       - Relations
  * @property Foo $foo
- * - Support
+ *                    - Support
  * @method static BarBuilder query()
  */
 class Bar extends Model

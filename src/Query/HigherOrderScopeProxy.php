@@ -12,7 +12,7 @@ use Closure;
 class HigherOrderScopeProxy
 {
     /**
-     * @param  array<int,Scope>  $scopes
+     * @param array<int,Scope> $scopes
      */
     public function __construct(
         protected array $scopes,
@@ -22,8 +22,8 @@ class HigherOrderScopeProxy
     /**
      * Adds a query argument to the scope.
      *
-     * @param  string  $name   The query name of the argument
-     * @param  Closure|null  $config Configures the argument. Accepts a ScopeArgument instance.
+     * @param string $name The query name of the argument
+     * @param Closure|null $config Configures the argument. Accepts a ScopeArgument instance.
      */
     public function arg(string $name, ?Closure $config = null): static
     {
