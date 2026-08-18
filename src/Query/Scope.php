@@ -47,7 +47,7 @@ class Scope implements QueryFilter
      *
      * @param string $name The query name of the argument
      * @param Closure(ScopeArgument):ScopeArgument|null $config Configures the argument. Accepts a
-     * ScopeArgument instance.
+     *                                                          ScopeArgument instance.
      */
     public function arg(string $name, ?Closure $config = null): static
     {

@@ -53,8 +53,6 @@ abstract class Query
         $modelName = $this->model();
         $model = new $modelName();
 
-        \assert($model instanceof Model);
-
         $this->instance = $model;
 
         /** @var QueryConfig<TModel,TBuilder> $config */
@@ -88,10 +86,10 @@ abstract class Query
     /**
      * Adds a filter to the query.
      *
-     * @param  Filter|string  $filter the filter name
-     * @param  FilterMode  $mode the "mode" to use (equals, contains, etc.)
-     * @param  mixed  $value the value to filter by
-     * @param  bool  $not whether to negate the filter
+     * @param Filter|string $filter the filter name
+     * @param FilterMode $mode the "mode" to use (equals, contains, etc.)
+     * @param mixed $value the value to filter by
+     * @param bool $not whether to negate the filter
      */
     public function filter(
         Filter|string $filter,

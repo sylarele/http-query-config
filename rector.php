@@ -8,6 +8,7 @@ use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitSelfCallRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\NoSetupWithParentCallOverrideRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
+use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Set\ValueObject\SetList;
 use Rector\ValueObject\PhpVersion;
 
@@ -24,11 +25,14 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->skip([
         NoSetupWithParentCallOverrideRector::class,
         PreferPHPUnitThisCallRector::class,
+        RenameMethodRector::class => [
+            __DIR__.'/tests/Feature/WithQueryTest.php',
+        ],
     ]);
     $rectorConfig->rule(PreferPHPUnitSelfCallRector::class);
 
     $rectorConfig->sets([
-        PHPUnitSetList::PHPUNIT_120,
+        PHPUnitSetList::COMPOSER_BASED,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
         SetList::CODE_QUALITY,
         SetList::CODING_STYLE,

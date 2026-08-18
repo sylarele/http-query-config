@@ -23,7 +23,7 @@ final class DateFormats implements ValidationRule
     ];
 
     /**
-     * @param  array<int,string>  $dateFormats
+     * @param array<int,string> $dateFormats
      */
     public function __construct(
         private array $dateFormats,
@@ -33,7 +33,7 @@ final class DateFormats implements ValidationRule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  Closure(string): PotentiallyTranslatedString  $fail
+     * @param Closure(string): PotentiallyTranslatedString $fail
      */
     #[Override]
     public function validate(
