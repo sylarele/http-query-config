@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace Sylarele\HttpQueryConfig\Query;
 
 use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use Override;
-use Stringable;
 use Sylarele\HttpQueryConfig\Contracts\QueryFilter;
 use Sylarele\HttpQueryConfig\Enums\FilterType;
 
 /**
  * Configures a simple query filter, for a single field.
+ *
+ * @phpstan-import-type ValidationRule from QueryFilter
+ * @phpstan-import-type ValidationRules from QueryFilter
  *
  * @template TModel of Model
  * @template TBuilder of Builder
@@ -35,6 +36,9 @@ class Filter implements QueryFilter
 
     /** @var bool whether the filter is a dummy filter (does not affect the query) */
     protected bool $dummy = false;
+
+    /** @var ValidationRules the custom validation rules for the filter */
+    protected array $validation = [];
 
     /**
      * @param TModel $model the model linked to the query
@@ -77,6 +81,32 @@ class Filter implements QueryFilter
     public function default(mixed $value): static
     {
         $this->default = $value;
+
+        return $this;
+    }
+
+    /**
+     * Sets custom validation rules for the value of the filter.
+     * Replaces the rules inferred from the filter type.
+     *
+     * @param ValidationRule $rules
+     */
+    public function withValidation(array $rules): static
+    {
+        $this->validation['value'] = $rules;
+
+        return $this;
+    }
+
+    /**
+     * Adds custom validation rules for a sub-key of the value of the filter.
+     * Mostly useful for array filters, using `*` as the sub-key.
+     *
+     * @param ValidationRule $rules
+     */
+    public function addedValidation(string $subKey, array $rules): static
+    {
+        $this->validation['value.'.$subKey] = $rules;
 
         return $this;
     }
@@ -173,15 +203,18 @@ class Filter implements QueryFilter
     }
 
     /**
-     * @return array<string, array<int,string|Stringable|ValidationRule>> the validation rules for the filter
+     * @return ValidationRules the validation rules for the filter
      */
     #[Override]
     public function getValidation(): array
     {
         return [
-            'value' => ['nullable', ...$this->getType()->getValueValidation()],
-            'not' => ['boolean'],
-            'mode' => [Rule::in($this->getType()->getModes(), false)],
+            ...[
+                'value' => ['nullable', ...$this->getType()->getValueValidation()],
+                'not' => ['boolean'],
+                'mode' => [Rule::in($this->getType()->getModes(), false)],
+            ],
+            ...$this->validation,
         ];
     }
 

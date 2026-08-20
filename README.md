@@ -39,3 +39,28 @@ class FooModelQuery extends Query
     }
 }
 ```
+
+## Validation des filtres
+
+Les filtres valident automatiquement leur valeur en fonction de leur `FilterType`.
+Ces règles peuvent être remplacées ou complétées depuis la Query, sans passer par la FormRequest :
+
+```php
+protected function configure(QueryConfig $config): void
+{
+    // Remplace les règles déduites du type, pour `state[value]`
+    $config
+        ->filter('state')
+        ->type(FilterType::String)
+        ->withValidation(['nullable', 'string', new Enum(FooState::class)]);
+
+    // Ajoute des règles sur une sous-clé de la valeur, ici `states[value][*]`
+    $config
+        ->filter('states')
+        ->field('state')
+        ->type(FilterType::Array)
+        ->addedValidation('*', ['required', 'string', new Enum(FooState::class)]);
+}
+```
+
+Les règles des clés `mode` et `not` du filtre restent déduites du `FilterType`.
