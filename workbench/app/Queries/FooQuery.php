@@ -38,6 +38,17 @@ class FooQuery extends Query
         $config->filter('name')->type(FilterType::String);
         $config->filter('size')->type(FilterType::Integer);
 
+        // Filters with custom validation rules
+        $config
+            ->filter('state')
+            ->type(FilterType::String)
+            ->withValidation(['nullable', 'string', new Enum(FooState::class)]);
+        $config
+            ->filter('states')
+            ->field('state')
+            ->type(FilterType::Array)
+            ->addedValidation('*', ['required', 'string', new Enum(FooState::class)]);
+
         // Scopes
         $config
             ->filter('whereState')
