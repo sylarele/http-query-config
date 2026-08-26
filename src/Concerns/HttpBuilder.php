@@ -61,7 +61,17 @@ trait HttpBuilder
         }
 
         foreach ($query->getSorts() as $sort) {
-            $this->orderBy($sort->getField(), $sort->getOrder()->value);
+            $methode = $sort->getScopeName();
+
+            if ($methode === null) {
+                $this->orderBy($sort->getField(), $sort->getOrder()->value);
+
+                continue;
+            }
+
+            if (method_exists($this, $methode)) {
+                $this->$methode($sort->getOrder());
+            }
         }
 
         if ($query->getFieldsOnly() !== []) {
