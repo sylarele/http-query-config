@@ -26,7 +26,7 @@
         "phpunit/phpunit": "^12.5|^13.3",
         "rector/rector": "^2.6",
         "shipmonk/composer-dependency-analyser": "^1.8",
-        "structuraphp/structura": "^0.8",
+        "structuraphp/structura": "^0.8 || ^0.9",
         "sylarele/php-cs-fixer-config": "^2.0"
     },
     "config": {
